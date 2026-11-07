@@ -43,7 +43,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bitchat.android.ui.theme.BitchatFontFamily
 import com.bitchat.android.R
-import com.bitchat.android.core.ui.icon.BitChatIcon
 import com.bitchat.android.ui.theme.BitchatMotion
 import com.bitchat.android.ui.theme.LocalBitchatPalette
 
@@ -186,7 +185,7 @@ internal fun AboutHero(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Icon(
-            imageVector = BitChatIcon,
+            imageVector = com.bitchat.android.posta.PostaIcon,
             contentDescription = null,
             tint = colorScheme.primary,
             modifier = Modifier.size(64.dp)

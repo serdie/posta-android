@@ -518,7 +518,7 @@ fun MessageItem(
 
         if (spamVerdict != null) {
             Text(
-                text = "spam filter would hide this: ${spamVerdict.debugLabel()}",
+                text = "el filtro de spam ocultaría esto: ${spamVerdict.debugLabel()}",
                 fontFamily = BitchatFontFamily,
                 fontSize = 11.sp,
                 color = colorScheme.error,
@@ -529,13 +529,13 @@ fun MessageItem(
 }
 
 private fun SpamVerdict.debugLabel(): String = when (this) {
-    SpamVerdict.ALLOWED -> "allowed"
-    SpamVerdict.MESSAGE_RATE -> "too many messages"
-    SpamVerdict.CHARACTER_RATE -> "too many characters"
-    SpamVerdict.LINK_RATE -> "too many links"
-    SpamVerdict.REPEATED_MESSAGE -> "repeated message"
-    SpamVerdict.REPEATED_ACROSS_USERS -> "same text from other users"
-    SpamVerdict.REPEATED_CHARACTERS -> "repeated characters"
+    SpamVerdict.ALLOWED -> "permitido"
+    SpamVerdict.MESSAGE_RATE -> "demasiados mensajes"
+    SpamVerdict.CHARACTER_RATE -> "demasiados caracteres"
+    SpamVerdict.LINK_RATE -> "demasiados enlaces"
+    SpamVerdict.REPEATED_MESSAGE -> "mensaje repetido"
+    SpamVerdict.REPEATED_ACROSS_USERS -> "mismo texto de otras personas"
+    SpamVerdict.REPEATED_CHARACTERS -> "caracteres repetidos"
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -1221,7 +1221,7 @@ internal fun CashuPaymentChip(
                 text = { Text(stringResource(R.string.cashu_copy_token)) },
                 onClick = {
                     val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                    clipboard.setPrimaryClip(ClipData.newPlainText("Cashu token", token))
+                    clipboard.setPrimaryClip(ClipData.newPlainText("Token Cashu", token))
                     showMenu = false
                 }
             )

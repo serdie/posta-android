@@ -19,7 +19,9 @@ internal fun BitchatMessage.isFromSelf(
 internal fun normalizeMessageUrl(rawUrl: String): String =
     if (
         rawUrl.startsWith("http://", ignoreCase = true) ||
-        rawUrl.startsWith("https://", ignoreCase = true)
+        rawUrl.startsWith("https://", ignoreCase = true) ||
+        // Posta: coordinates in emergency statuses open in any (offline) map app.
+        rawUrl.startsWith("geo:", ignoreCase = true)
     ) {
         rawUrl
     } else {

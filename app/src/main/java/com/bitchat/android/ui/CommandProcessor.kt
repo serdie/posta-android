@@ -20,16 +20,16 @@ class CommandProcessor(
     
     // Available commands list
     private val baseCommands = listOf(
-        CommandSuggestion("/block", emptyList(), "[nickname]", "block or list blocked peers"),
-        CommandSuggestion("/channels", emptyList(), null, "show all discovered channels"),
-        CommandSuggestion("/clear", emptyList(), null, "clear chat messages"),
-        CommandSuggestion("/hug", emptyList(), "<nickname>", "send someone a warm hug"),
-        CommandSuggestion("/j", listOf("/join"), "<channel>", "join or create a channel"),
-        CommandSuggestion("/m", listOf("/msg"), "<nickname> [message]", "send private message"),
-        CommandSuggestion("/pay", emptyList(), "<token> [public]", "send a Cashu ecash token"),
-        CommandSuggestion("/slap", emptyList(), "<nickname>", "slap someone with a trout"),
-        CommandSuggestion("/unblock", emptyList(), "<nickname>", "unblock a peer"),
-        CommandSuggestion("/w", emptyList(), null, "see who's online")
+        CommandSuggestion("/block", emptyList(), "[apodo]", "bloquear o ver bloqueados"),
+        CommandSuggestion("/channels", emptyList(), null, "ver los canales encontrados"),
+        CommandSuggestion("/clear", emptyList(), null, "borrar los mensajes del chat"),
+        CommandSuggestion("/hug", emptyList(), "<apodo>", "mandar un abrazo"),
+        CommandSuggestion("/j", listOf("/join"), "<canal>", "entrar o crear un canal"),
+        CommandSuggestion("/m", listOf("/msg"), "<apodo> [mensaje]", "enviar un mensaje privado"),
+        CommandSuggestion("/pay", emptyList(), "<token> [public]", "enviar un token Cashu"),
+        CommandSuggestion("/slap", emptyList(), "<apodo>", "dar un tortazo con una trucha"),
+        CommandSuggestion("/unblock", emptyList(), "<apodo>", "desbloquear a alguien"),
+        CommandSuggestion("/w", emptyList(), null, "ver quién está conectado")
     )
     
     // MARK: - Command Processing
@@ -48,8 +48,8 @@ class CommandProcessor(
             "/pass" -> handlePassCommand(parts, myPeerID)
             "/block" -> handleBlockCommand(parts, meshService)
             "/unblock" -> handleUnblockCommand(parts, meshService)
-            "/hug" -> handleActionCommand(parts, "gives", "a warm hug 🫂", meshService, myPeerID, onSendMessage, viewModel)
-            "/slap" -> handleActionCommand(parts, "slaps", "around a bit with a large trout 🐟", meshService, myPeerID, onSendMessage, viewModel)
+            "/hug" -> handleActionCommand(parts, "da a", "un abrazo muy fuerte 🫂", meshService, myPeerID, onSendMessage, viewModel)
+            "/slap" -> handleActionCommand(parts, "le da a", "un tortazo con una trucha enorme 🐟", meshService, myPeerID, onSendMessage, viewModel)
             "/channels" -> handleChannelsCommand()
             else -> handleUnknownCommand(cmd)
         }
@@ -66,7 +66,7 @@ class CommandProcessor(
             if (success) {
                 val systemMessage = BitchatMessage(
                     sender = "system",
-                    content = "joined channel $channel",
+                    content = "has entrado en el canal $channel",
                     timestamp = Date(),
                     isRelay = false
                 )
@@ -75,7 +75,7 @@ class CommandProcessor(
         } else {
             val systemMessage = BitchatMessage(
                 sender = "system",
-                content = "usage: /join <channel>",
+                content = "uso: /join <canal>",
                 timestamp = Date(),
                 isRelay = false
             )
@@ -107,7 +107,7 @@ class CommandProcessor(
                     } else {
                         val systemMessage = BitchatMessage(
                             sender = "system",
-                            content = "started private chat with $targetName",
+                            content = "conversación privada con $targetName",
                             timestamp = Date(),
                             isRelay = false
                         )
@@ -117,7 +117,7 @@ class CommandProcessor(
             } else {
                 val systemMessage = BitchatMessage(
                     sender = "system",
-                    content = "user '$targetName' not found. they may be offline or using a different nickname.",
+                    content = "no se encuentra a «$targetName». Puede que esté desconectado o use otro apodo.",
                     timestamp = Date(),
                     isRelay = false
                 )
@@ -126,7 +126,7 @@ class CommandProcessor(
         } else {
             val systemMessage = BitchatMessage(
                 sender = "system",
-                content = "usage: /msg <nickname> [message]",
+                content = "uso: /msg <apodo> [mensaje]",
                 timestamp = Date(),
                 isRelay = false
             )
@@ -145,7 +145,7 @@ class CommandProcessor(
                     val peerList = connectedPeers.joinToString(", ") { peerID ->
                         getPeerNickname(peerID, meshService)
                     }
-                    Pair(peerList, "online users")
+                    Pair(peerList, "personas conectadas")
                 }
                 
                 is com.bitchat.android.geohash.ChannelID.Location -> {
@@ -163,7 +163,7 @@ class CommandProcessor(
                         }
                     }.joinToString(", ")
                     
-                    Pair(participantList, "participants in ${selectedChannel.channel.geohash}")
+                    Pair(participantList, "participantes en ${selectedChannel.channel.geohash}")
                 }
             }
         } else {
@@ -172,13 +172,13 @@ class CommandProcessor(
             val peerList = connectedPeers.joinToString(", ") { peerID ->
                 getPeerNickname(peerID, meshService)
             }
-            Pair(peerList, "online users")
+            Pair(peerList, "personas conectadas")
         }
         
         val systemMessage = BitchatMessage(
             sender = "system",
             content = if (peerList.isEmpty()) {
-                "no one else is around right now."
+                "ahora mismo no hay nadie más cerca."
             } else {
                 "$contextDescription: $peerList"
             },
@@ -216,7 +216,7 @@ class CommandProcessor(
         if (currentChannel == null) {
             val systemMessage = BitchatMessage(
                 sender = "system",
-                content = "you must be in a channel to set a password.",
+                content = "tienes que estar en un canal para ponerle contraseña.",
                 timestamp = Date(),
                 isRelay = false
             )
@@ -228,7 +228,7 @@ class CommandProcessor(
             if(!channelManager.isChannelCreator(channel = currentChannel, peerID = peerID)){
                 val systemMessage = BitchatMessage(
                     sender = "system",
-                    content = "you must be the channel creator to set a password.",
+                    content = "solo quien creó el canal puede ponerle contraseña.",
                     timestamp = Date(),
                     isRelay = false
                 )
@@ -239,7 +239,7 @@ class CommandProcessor(
             channelManager.setChannelPassword(currentChannel, newPassword)
             val systemMessage = BitchatMessage(
                 sender = "system",
-                content = "password changed for channel $currentChannel",
+                content = "contraseña cambiada en el canal $currentChannel",
                 timestamp = Date(),
                 isRelay = false
             )
@@ -248,7 +248,7 @@ class CommandProcessor(
         else{
             val systemMessage = BitchatMessage(
                 sender = "system",
-                content = "usage: /pass <password>",
+                content = "uso: /pass <contraseña>",
                 timestamp = Date(),
                 isRelay = false
             )
@@ -280,7 +280,7 @@ class CommandProcessor(
         } else {
             val systemMessage = BitchatMessage(
                 sender = "system",
-                content = "usage: /unblock <nickname>",
+                content = "uso: /unblock <apodo>",
                 timestamp = Date(),
                 isRelay = false
             )
@@ -299,7 +299,7 @@ class CommandProcessor(
     ) {
         if (parts.size > 1) {
             val targetName = parts[1].removePrefix("@")
-            val actionMessage = "* ${state.getNicknameValue() ?: "someone"} $verb $targetName $object_ *"
+            val actionMessage = "* ${state.getNicknameValue() ?: "alguien"} $verb $targetName $object_ *"
 
             // If we're in a geohash location channel, don't add a local echo here.
             // GeohashViewModel.sendGeohashMessage() will add the local echo with proper metadata.
@@ -341,7 +341,7 @@ class CommandProcessor(
         } else {
             val systemMessage = BitchatMessage(
                 sender = "system",
-                content = "usage: /${parts[0].removePrefix("/")} <nickname>",
+                content = "usage: /${parts[0].removePrefix("/")} <apodo>",
                 timestamp = Date(),
                 isRelay = false
             )
@@ -352,9 +352,9 @@ class CommandProcessor(
     private fun handleChannelsCommand() {
         val allChannels = channelManager.getJoinedChannelsList()
         val channelList = if (allChannels.isEmpty()) {
-            "no channels joined"
+            "no estás en ningún canal"
         } else {
-            "joined channels: ${allChannels.joinToString(", ")}"
+            "tus canales: ${allChannels.joinToString(", ")}"
         }
         
         val systemMessage = BitchatMessage(
@@ -375,7 +375,7 @@ class CommandProcessor(
     ) {
         val args = command.trim().split(Regex("\\s+")).drop(1)
         if (args.isEmpty()) {
-            addSystemMessage("usage: /pay <cashu token> [public] — Cashu tokens are bearer instruments")
+            addSystemMessage("uso: /pay <token cashu> [public] — quien tenga el token puede cobrarlo")
             return
         }
 
@@ -384,7 +384,7 @@ class CommandProcessor(
         val token = CashuTokenDecoder.bareToken(rawToken)
         val info = token?.let { CashuTokenDecoder.decode(it, strict = true) }
         if (token == null || info == null) {
-            addSystemMessage("invalid cashu token — not sending it")
+            addSystemMessage("token cashu no válido — no se envía")
             return
         }
 
@@ -402,8 +402,8 @@ class CommandProcessor(
         } else {
             if (!publicConfirmed) {
                 addSystemMessage(
-                    "Cashu tokens are bearer instruments. Anyone here can redeem this token. " +
-                        "Confirm with: /pay <token> public"
+                    "Quien tenga un token Cashu puede cobrarlo. Cualquiera aquí podría canjear este. " +
+                        "Confírmalo con: /pay <token> public"
                 )
                 return
             }
@@ -426,7 +426,7 @@ class CommandProcessor(
         }
 
         addSystemMessage(
-            "sent ${info.displayAmount ?: "Cashu token"} — bearer token; first redeemer wins"
+            "enviado ${info.displayAmount ?: "token Cashu"} — lo cobra quien lo canjee primero"
         )
     }
 
@@ -458,7 +458,7 @@ class CommandProcessor(
     private fun handleUnknownCommand(cmd: String) {
         val systemMessage = BitchatMessage(
             sender = "system",
-            content = "unknown command: $cmd. type / to see available commands.",
+            content = "comando desconocido: $cmd. Escribe / para ver los comandos.",
             timestamp = Date(),
             isRelay = false
         )
@@ -505,9 +505,9 @@ class CommandProcessor(
         // Add channel-specific commands if in a channel
         val channelCommands = if (state.getCurrentChannelValue() != null) {
             listOf(
-                CommandSuggestion("/pass", emptyList(), "[password]", "change channel password"),
-                CommandSuggestion("/save", emptyList(), null, "save channel messages locally"),
-                CommandSuggestion("/transfer", emptyList(), "<nickname>", "transfer channel ownership")
+                CommandSuggestion("/pass", emptyList(), "[contraseña]", "cambiar la contraseña del canal"),
+                CommandSuggestion("/save", emptyList(), null, "guardar los mensajes del canal en el móvil"),
+                CommandSuggestion("/transfer", emptyList(), "<apodo>", "pasar la propiedad del canal")
             )
         } else {
             emptyList()

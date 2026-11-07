@@ -275,17 +275,17 @@ class NostrDirectMessageHandler(
                 ?: senderNickname
             val guidance = if (control.isFavorite) {
                 if (relationship?.isFavorite == true) {
-                    " - mutual! You can continue DMs via Nostr when out of mesh."
+                    " — ¡mutuo! Podréis seguir hablando por Nostr fuera de la malla."
                 } else {
-                    " - favorite back to continue DMs later."
+                    " — márcale como favorito para seguir hablando más tarde."
                 }
             } else {
-                ". DMs over Nostr will pause unless you both favorite again."
+                ". Los mensajes por Nostr se pausan hasta que os volváis a marcar como favoritos."
             }
-            val action = if (control.isFavorite) "favorited" else "unfavorited"
+            val action = if (control.isFavorite) "te ha marcado como favorito" else "te ha quitado de favoritos"
             val systemMessage = BitchatMessage(
                 sender = "system",
-                content = "$displayName $action you$guidance",
+                content = "$displayName $action$guidance",
                 timestamp = timestamp,
                 isRelay = false,
                 isPrivate = true,

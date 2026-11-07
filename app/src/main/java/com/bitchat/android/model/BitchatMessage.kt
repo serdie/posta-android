@@ -41,10 +41,10 @@ sealed class DeliveryStatus : Parcelable {
         return when (this) {
             is Sending -> "Sending..."
             is Sent -> "Sent"
-            is Delivered -> "Delivered to ${this.to}"
-            is Read -> "Read by ${this.by}"
-            is Failed -> "Failed: ${this.reason}"
-            is PartiallyDelivered -> "Delivered to ${this.reached}/${this.total}"
+            is Delivered -> "Entregado a ${this.to}"
+            is Read -> "Leído por ${this.by}"
+            is Failed -> "Error: ${this.reason}"
+            is PartiallyDelivered -> "Entregado a ${this.reached}/${this.total}"
         }
     }
 }

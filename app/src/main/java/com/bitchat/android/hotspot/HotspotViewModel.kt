@@ -76,7 +76,7 @@ class HotspotViewModel(application: Application) : AndroidViewModel(application)
                             // Get connection info
                             val info = manager.getConnectionInfo()
                             if (info == null) {
-                                failWith("Failed to get hotspot connection info")
+                                failWith("No se han podido obtener los datos de la red wifi")
                                 return@launch
                             }
 
@@ -98,7 +98,7 @@ class HotspotViewModel(application: Application) : AndroidViewModel(application)
                                 )
                             } catch (e: Exception) {
                                 Log.e(TAG, "Failed to start web server", e)
-                                failWith("Failed to start web server: ${e.message}")
+                                failWith("No se ha podido iniciar la página de descarga: ${e.message}")
                             }
                         }
                     }
@@ -131,7 +131,7 @@ class HotspotViewModel(application: Application) : AndroidViewModel(application)
 
             } catch (e: Exception) {
                 Log.e(TAG, "Error starting hotspot", e)
-                failWith(e.message ?: "Unknown error")
+                failWith(e.message ?: "Error desconocido")
             }
         }
     }

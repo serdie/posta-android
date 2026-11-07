@@ -202,7 +202,7 @@ class UnifiedMeshService(
                 file,
                 transferId,
                 allowLegacyFallback
-            ) ?: PrivateMediaPreparation.Rejected("Wi-Fi Aware transport is unavailable")
+            ) ?: PrivateMediaPreparation.Rejected("Wi‑Fi Aware no está disponible")
             isBleConnected(recipientPeerID) || (isBleEnabled() && !isWifiConnected(recipientPeerID)) ->
                 bluetooth.prepareFilePrivate(
                     recipientPeerID,
@@ -215,7 +215,7 @@ class UnifiedMeshService(
                 file,
                 transferId,
                 allowLegacyFallback
-            ) ?: PrivateMediaPreparation.Rejected("No local transport is available for this peer")
+            ) ?: PrivateMediaPreparation.Rejected("No hay forma de llegar a esta persona ahora mismo")
         }
     }
 

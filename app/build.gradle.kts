@@ -33,11 +33,11 @@ android {
     if (releaseUiTests) testBuildType = "release"
 
     defaultConfig {
-        applicationId = "com.bitchat.droid"
+        applicationId = "org.posta.app"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
-        versionCode = 42
-        versionName = "2.2.0"
+        versionCode = 4
+        versionName = "0.3.0" // Posta 0.3.0, basada en Bitchat Android 2.2.0
         buildConfigField(
             "String",
             "GITHUB_RELEASE_CERT_SHA256",
@@ -125,6 +125,11 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    // Posta: solo español, también en los textos de las bibliotecas de Android.
+    androidResources {
+        localeFilters += listOf("es")
+    }
+
     lint {
         baseline = file("lint-baseline.xml")
         abortOnError = false

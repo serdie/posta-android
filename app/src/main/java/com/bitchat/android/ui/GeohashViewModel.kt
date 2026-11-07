@@ -295,7 +295,7 @@ class GeohashViewModel(
             repo.updateReactiveParticipantCounts()
             val sysMsg = com.bitchat.android.model.BitchatMessage(
                 sender = "system",
-                content = "blocked $targetNickname in geohash channels",
+                content = "has bloqueado a $targetNickname en los canales de zona",
                 timestamp = Date(),
                 isRelay = false
             )
@@ -303,7 +303,7 @@ class GeohashViewModel(
         } else {
             val sysMsg = com.bitchat.android.model.BitchatMessage(
                 sender = "system",
-                content = "user '$targetNickname' not found in current geohash",
+                content = "no se encuentra a «$targetNickname» en esta zona",
                 timestamp = Date(),
                 isRelay = false
             )

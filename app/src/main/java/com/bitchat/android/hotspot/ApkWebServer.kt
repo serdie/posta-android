@@ -47,7 +47,7 @@ class ApkWebServer(
                 serveApk()
             }
             uri == "/favicon.ico" -> {
-                newFixedLengthResponse(Response.Status.NOT_FOUND, "text/plain", "Not found")
+                newFixedLengthResponse(Response.Status.NOT_FOUND, "text/plain", "No encontrado")
             }
             else -> {
                 serveLandingPage()
@@ -65,7 +65,7 @@ class ApkWebServer(
                 return newFixedLengthResponse(
                     Response.Status.NOT_FOUND,
                     "text/plain",
-                    "APK file not found"
+                    "No se encuentra el instalador"
                 )
             }
 
@@ -79,7 +79,7 @@ class ApkWebServer(
                 apkFile.length()
             )
 
-            response.addHeader("Content-Disposition", "attachment; filename=\"bitchat-${appVersion}.apk\"")
+            response.addHeader("Content-Disposition", "attachment; filename=\"posta-${appVersion}.apk\"")
             response.addHeader("Accept-Ranges", "bytes")
 
             response
@@ -112,11 +112,11 @@ class ApkWebServer(
 
         return """
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Download BitChat</title>
+    <title>Descargar Posta</title>
     <style>
         * {
             margin: 0;
@@ -257,38 +257,38 @@ class ApkWebServer(
 <body>
     <div class="container">
         <div class="logo">🔒</div>
-        <h1>BitChat</h1>
-        <p class="subtitle">Secure Mesh Messaging</p>
+        <h1>Posta</h1>
+        <p class="subtitle">Mensajería sin red para emergencias</p>
 
         <div class="info-grid">
             <div class="info-box">
-                <div class="info-label">Version</div>
+                <div class="info-label">Versión</div>
                 <div class="info-value">$appVersion</div>
             </div>
             <div class="info-box">
-                <div class="info-label">Size</div>
+                <div class="info-label">Tamaño</div>
                 <div class="info-value">${apkSizeMb} MB</div>
             </div>
         </div>
 
         <a href="/bitchat.apk" class="download-button">
-            📥 Download BitChat
+            📥 Descargar Posta
         </a>
 
         <div class="instructions">
-            <h3>📱 Installation Instructions</h3>
+            <h3>📱 Cómo instalarla</h3>
             <ol>
-                <li>Tap the download button above</li>
-                <li>Wait for the download to complete</li>
-                <li>Open the downloaded APK file</li>
-                <li>If prompted, enable "Install from unknown sources" for your browser</li>
-                <li>Follow the installation prompts</li>
+                <li>Toca el botón de descarga</li>
+                <li>Espera a que termine la descarga</li>
+                <li>Abre el archivo descargado</li>
+                <li>Si te lo pide, permite «Instalar apps desconocidas» para el navegador</li>
+                <li>Sigue los pasos de instalación</li>
             </ol>
         </div>
 
         <div class="warning">
-            <strong>⚠️ Note:</strong>
-            If you already have BitChat installed, you may need to uninstall it first before installing this version. Make sure to backup your data if needed.
+            <strong>⚠️ Aviso:</strong>
+            Si ya tienes Posta instalada con otra firma, quizá tengas que desinstalarla antes. Puedes tener Bitchat instalada a la vez sin problema.
         </div>
     </div>
 </body>

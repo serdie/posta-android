@@ -490,7 +490,7 @@ fun MessageInput(
                     Text(
                         text = if (
                             selectedPrivatePeer == null && currentChannel == null && activePublicTalker != null
-                        ) "$activePublicTalker is live" else stringResource(R.string.type_a_message_placeholder),
+                        ) "$activePublicTalker está hablando" else stringResource(R.string.type_a_message_placeholder),
                         style = MaterialTheme.typography.bodyMedium.copy(
                             fontFamily = BitchatFontFamily
                         ),
@@ -762,7 +762,7 @@ private fun RecordingCancelButton(
         ) {
             Icon(
                 imageVector = Icons.Filled.Close,
-                contentDescription = "Cancel recording",
+                contentDescription = "Cancelar grabación",
                 tint = tint,
                 modifier = Modifier.size(ComposerIconSize)
             )

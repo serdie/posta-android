@@ -197,7 +197,7 @@ class GeohashBookmarksStore private constructor(private val context: Context) {
                     when (admins.size) {
                         0 -> null
                         1 -> admins.first()
-                        else -> admins.elementAt(0) + " and " + admins.elementAt(1)
+                        else -> admins.elementAt(0) + " y " + admins.elementAt(1)
                     }
                 } else {
                     val center = Geohash.decodeToCenter(gh)

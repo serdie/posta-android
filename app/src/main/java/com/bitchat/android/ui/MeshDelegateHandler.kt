@@ -67,6 +67,18 @@ class MeshDelegateHandler(
                 }
             }
             
+            // Posta: hide identical repeats of an active emergency status (see PostaBeacon).
+            if (!message.isPrivate &&
+                com.bitchat.android.posta.PostaSettings.values.value.collapseRepeats &&
+                com.bitchat.android.posta.PostaRepeatFilter.shared.isRepeat(
+                    senderKey = message.senderPeerID ?: message.sender,
+                    content = message.content,
+                    nowMs = System.currentTimeMillis()
+                )
+            ) {
+                return@launch
+            }
+
             // Trigger haptic feedback
             onHapticFeedback()
 

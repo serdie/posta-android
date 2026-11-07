@@ -110,13 +110,13 @@ fun HotspotScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "Share BitChat",
+                        text = "Compartir Posta",
                         fontFamily = BitchatFontFamily
                     )
                 },
                 navigationIcon = {
                     IconButton(onClick = onClose) {
-                        Icon(Icons.Default.Close, contentDescription = "Close")
+                        Icon(Icons.Default.Close, contentDescription = "Cerrar")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -210,7 +210,7 @@ fun IntroScreen(onStartHotspot: () -> Unit) {
         )
 
         Text(
-            text = "Offline App Sharing",
+            text = "Compartir la app sin internet",
             style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold
         )
@@ -226,14 +226,14 @@ fun IntroScreen(onStartHotspot: () -> Unit) {
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Text(
-                    text = "How it works:",
+                    text = "Cómo funciona:",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
-                InfoItem("1. Your device creates a Wi-Fi hotspot")
-                InfoItem("2. Others connect to your hotspot")
-                InfoItem("3. They scan a QR code or enter a URL")
-                InfoItem("4. BitChat downloads directly to their device")
+                InfoItem("1. Tu móvil crea una red wifi")
+                InfoItem("2. Los demás se conectan a esa red")
+                InfoItem("3. Escanean un código QR o escriben una dirección")
+                InfoItem("4. Posta se descarga directamente en su móvil")
             }
         }
 
@@ -258,11 +258,11 @@ fun IntroScreen(onStartHotspot: () -> Unit) {
                     Text(
                         text = when {
                             Build.VERSION.SDK_INT >= HotspotPermissions.ANDROID_17_API_LEVEL ->
-                                "BitChat needs nearby devices and local network access to create a Wi-Fi hotspot and serve the app to connected devices."
+                                "Posta necesita los permisos de dispositivos cercanos y red local para crear una red wifi y pasar la app a quien se conecte."
                             Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ->
-                                "BitChat needs nearby devices permission to create a Wi-Fi hotspot for sharing the app offline."
+                                "Posta necesita el permiso de dispositivos cercanos para crear una red wifi y compartir la app sin internet."
                             else ->
-                                "BitChat needs location permission to create a Wi-Fi hotspot. This is required by Android for Wi-Fi scanning, but no location data is collected."
+                                "Posta necesita el permiso de ubicación para crear una red wifi. Lo exige Android para usar el wifi, pero no se recoge ningún dato de ubicación."
                         },
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
@@ -288,7 +288,7 @@ fun IntroScreen(onStartHotspot: () -> Unit) {
                     color = MaterialTheme.colorScheme.error
                 )
                 Text(
-                    text = "This will create a Wi-Fi hotspot on your device. Your current Wi-Fi connection may be interrupted.",
+                    text = "Se creará una red wifi en tu móvil. Puede cortarse tu conexión wifi actual.",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                 )
@@ -317,7 +317,7 @@ fun IntroScreen(onStartHotspot: () -> Unit) {
                 // Starting the hotspot is the user's action. Android will ask
                 // for the required permission only when it has not already
                 // been granted.
-                text = "Start Hotspot",
+                text = "Crear red wifi",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
@@ -358,7 +358,7 @@ fun LoadingScreen() {
                 modifier = Modifier.size(48.dp)
             )
             Text(
-                text = "Starting hotspot...",
+                text = "Creando la red wifi…",
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
             )
@@ -369,7 +369,7 @@ fun LoadingScreen() {
 @Composable
 fun ActiveHotspotScreen(state: HotspotViewModel.HotspotState.Active) {
     var selectedTab by remember { mutableStateOf(0) }
-    val tabs = listOf("Wi-Fi", "Website")
+    val tabs = listOf("Wifi", "Página")
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -387,7 +387,7 @@ fun ActiveHotspotScreen(state: HotspotViewModel.HotspotState.Active) {
             ) {
                 Column {
                     Text(
-                        text = "Hotspot Active",
+                        text = "Red wifi activa",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onPrimaryContainer
@@ -456,14 +456,14 @@ fun WifiTabContent(ssid: String, password: String) {
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
         Text(
-            text = "Step 1: Connect to Wi-Fi",
+            text = "Paso 1: conectarse a la red wifi",
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center
         )
 
         Text(
-            text = "Have others scan this QR code to connect:",
+            text = "Que escaneen este código QR para conectarse:",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
             textAlign = TextAlign.Center
@@ -484,21 +484,21 @@ fun WifiTabContent(ssid: String, password: String) {
             ) {
                 Image(
                     bitmap = wifiQr.asImageBitmap(),
-                    contentDescription = "Wi-Fi QR Code",
+                    contentDescription = "Código QR de la red wifi",
                     modifier = Modifier.size(280.dp)
                 )
             }
         }
 
         Text(
-            text = "Or enter manually:",
+            text = "O a mano:",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
         )
 
         // SSID
         CredentialCard(
-            label = "Network Name (SSID)",
+            label = "Nombre de la red (SSID)",
             value = ssid,
             onCopy = {
                 clipboardManager.setText(AnnotatedString(ssid))
@@ -507,7 +507,7 @@ fun WifiTabContent(ssid: String, password: String) {
 
         // Password
         CredentialCard(
-            label = "Password",
+            label = "Contraseña",
             value = password,
             onCopy = {
                 clipboardManager.setText(AnnotatedString(password))
@@ -530,14 +530,14 @@ fun WebsiteTabContent(ipAddress: String, port: Int) {
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
         Text(
-            text = "Step 2: Download BitChat",
+            text = "Paso 2: descargar Posta",
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center
         )
 
         Text(
-            text = "After connecting to the Wi-Fi, scan this QR code:",
+            text = "Una vez conectados, que escaneen este código QR:",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
             textAlign = TextAlign.Center
@@ -558,21 +558,21 @@ fun WebsiteTabContent(ipAddress: String, port: Int) {
             ) {
                 Image(
                     bitmap = urlQr.asImageBitmap(),
-                    contentDescription = "Website URL QR Code",
+                    contentDescription = "Código QR de la dirección de descarga",
                     modifier = Modifier.size(280.dp)
                 )
             }
         }
 
         Text(
-            text = "Or open in browser:",
+            text = "O que abran en el navegador:",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
         )
 
         // URL
         CredentialCard(
-            label = "Website URL",
+            label = "Dirección",
             value = url,
             onCopy = {
                 clipboardManager.setText(AnnotatedString(url))
@@ -595,11 +595,11 @@ fun WebsiteTabContent(ipAddress: String, port: Int) {
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = "1. Make sure you're connected to the Wi-Fi network above\n" +
-                            "2. Open a web browser on your device\n" +
-                            "3. Visit the URL above or scan the QR code\n" +
-                            "4. Tap 'Download BitChat'\n" +
-                            "5. Install the downloaded APK",
+                    text = "1. Comprueba que estás conectado a la red wifi de arriba\n" +
+                            "2. Abre el navegador del móvil\n" +
+                            "3. Entra en la dirección de arriba o escanea el código QR\n" +
+                            "4. Toca «Descargar Posta»\n" +
+                            "5. Instala el archivo descargado",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                 )
@@ -645,7 +645,7 @@ fun CredentialCard(
             IconButton(onClick = onCopy) {
                 Icon(
                     imageVector = Icons.Default.ContentCopy,
-                    contentDescription = "Copy",
+                    contentDescription = "Copiar",
                     tint = MaterialTheme.colorScheme.onSecondaryContainer
                 )
             }
@@ -694,13 +694,13 @@ fun ErrorScreen(
             onClick = onRetry,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Try Again")
+            Text("Reintentar")
         }
 
         Spacer(modifier = Modifier.height(8.dp))
 
         TextButton(onClick = onClose) {
-            Text("Close")
+            Text("Cerrar")
         }
     }
 }

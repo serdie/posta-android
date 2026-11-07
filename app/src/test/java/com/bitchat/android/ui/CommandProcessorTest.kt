@@ -158,7 +158,7 @@ class CommandProcessorTest {
     )
 
     assertEquals(
-      "invalid cashu token — not sending it",
+      "token cashu no válido — no se envía",
       chatState.getChannelMessagesValue()["geo:$geohash"]?.single()?.content
     )
     assertEquals(0, chatState.getMessagesValue().size)

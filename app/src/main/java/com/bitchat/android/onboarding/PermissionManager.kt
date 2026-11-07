@@ -255,10 +255,10 @@ class PermissionManager(private val context: Context) {
         categories.add(
             PermissionCategory(
                 type = PermissionType.NEARBY_DEVICES,
-                description = "Required to discover bitchat users via Bluetooth",
+                description = "Necesario para encontrar por Bluetooth a quien use Posta o Bitchat",
                 permissions = bluetoothPermissions,
                 isGranted = bluetoothPermissions.all { isPermissionGranted(it) },
-                systemDescription = "Allow bitchat to connect to nearby devices"
+                systemDescription = "Permite que Posta se conecte a dispositivos cercanos"
             )
         )
 
@@ -271,10 +271,10 @@ class PermissionManager(private val context: Context) {
         categories.add(
             PermissionCategory(
                 type = PermissionType.PRECISE_LOCATION,
-                description = "Required by Android to discover nearby bitchat users via Bluetooth",
+                description = "Android lo exige para encontrar por Bluetooth a la gente cercana",
                 permissions = locationPermissions,
                 isGranted = locationPermissions.all { isPermissionGranted(it) },
-                systemDescription = "bitchat needs this to scan for nearby devices"
+                systemDescription = "Posta lo necesita para buscar dispositivos cercanos"
             )
         )
 
@@ -284,10 +284,10 @@ class PermissionManager(private val context: Context) {
             categories.add(
                 PermissionCategory(
                     type = PermissionType.WIFI_AWARE,
-                    description = "Enable Wi‑Fi Aware to discover and connect to nearby bitchat users over Wi‑Fi.",
+                    description = "Permite usar Wi‑Fi Aware para encontrar y conectar con la gente cercana por wifi.",
                     permissions = wifiAwarePermissions,
                     isGranted = wifiAwarePermissions.all { isPermissionGranted(it) },
-                    systemDescription = "Allow bitchat to discover nearby Wi‑Fi devices"
+                    systemDescription = "Permite que Posta encuentre dispositivos wifi cercanos"
                 )
             )
         }
@@ -310,10 +310,10 @@ class PermissionManager(private val context: Context) {
             categories.add(
                 PermissionCategory(
                     type = PermissionType.NOTIFICATIONS,
-                    description = "Receive notifications when you receive private messages",
+                    description = "Recibe un aviso cuando te llegue un mensaje privado",
                     permissions = listOf(Manifest.permission.POST_NOTIFICATIONS),
                     isGranted = isPermissionGranted(Manifest.permission.POST_NOTIFICATIONS),
-                    systemDescription = "Allow bitchat to send you notifications"
+                    systemDescription = "Permite que Posta te envíe avisos"
                 )
             )
         }
@@ -325,10 +325,10 @@ class PermissionManager(private val context: Context) {
             categories.add(
                 PermissionCategory(
                     type = PermissionType.BATTERY_OPTIMIZATION,
-                    description = "Disable battery optimization to ensure bitchat runs reliably in the background and maintains mesh network connections",
+                    description = "Quita la optimización de batería para que Posta funcione bien en segundo plano y mantenga la malla",
                     permissions = listOf("BATTERY_OPTIMIZATION"), // Custom identifier
                     isGranted = isBatteryOptimizationDisabled(),
-                    systemDescription = "Allow bitchat to run without battery restrictions"
+                    systemDescription = "Permite que Posta funcione sin limitaciones de batería"
                 )
             )
         }
@@ -386,12 +386,12 @@ data class PermissionCategory(
 )
 
 enum class PermissionType(val nameValue: String) {
-    NEARBY_DEVICES("Nearby Devices"),
-    PRECISE_LOCATION("Precise Location"),
-    BACKGROUND_LOCATION("Background Location"),
-    MICROPHONE("Microphone"),
-    NOTIFICATIONS("Notifications"),
+    NEARBY_DEVICES("Dispositivos cercanos"),
+    PRECISE_LOCATION("Ubicación precisa"),
+    BACKGROUND_LOCATION("Ubicación en segundo plano"),
+    MICROPHONE("Micrófono"),
+    NOTIFICATIONS("Notificaciones"),
     WIFI_AWARE("Wi‑Fi Aware"),
-    BATTERY_OPTIMIZATION("Battery Optimization"),
-    OTHER("Other")
+    BATTERY_OPTIMIZATION("Optimización de batería"),
+    OTHER("Otros")
 }

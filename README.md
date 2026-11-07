@@ -1,3 +1,5 @@
+> **Posta** — este repositorio es un fork de Bitchat Android orientado a emergencias. Lee [POSTA.md](POSTA.md) para ver qué cambia. El resto de este README es el original de Bitchat.
+
 <img width="256" height="256" alt="icon_128x128@2x" src="https://github.com/user-attachments/assets/90133f83-b4f6-41c6-aab9-25d0859d2a47" />
 
 ## bitchat for Android

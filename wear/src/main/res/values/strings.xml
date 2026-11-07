@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Posta es solo en español: el idioma por defecto del reloj también lo es. -->
 <resources>
-    <string name="app_name">bitchat</string>
-    <string name="mesh_channel_name">Mesh network</string>
-    <string name="mesh_channel_description">Keeps the Bluetooth mesh running in the background</string>
-    <string name="mesh_notification_no_peers">Mesh running</string>
+    <string name="app_name">Posta</string>
+    <string name="mesh_channel_name">Red en malla</string>
+    <string name="mesh_channel_description">Mantiene activa la malla Bluetooth en segundo plano</string>
+    <string name="mesh_notification_no_peers">Malla activa</string>
     <plurals name="mesh_notification_text">
-        <item quantity="one">%1$d peer</item>
-        <item quantity="other">%1$d peers</item>
+        <item quantity="one">%1$d teléfono cerca</item>
+        <item quantity="other">%1$d teléfonos cerca</item>
     </plurals>
-    <string name="message_channel_name">Direct messages</string>
-    <string name="message_channel_description">Encrypted direct-message alerts</string>
-    <string name="notification_new_private_message">New encrypted message</string>
-    <string name="notification_private_message_hidden">Unlock to view the message</string>
+    <string name="message_channel_name">Mensajes privados</string>
+    <string name="message_channel_description">Avisos de mensajes privados cifrados</string>
+    <string name="notification_new_private_message">Nuevo mensaje cifrado</string>
+    <string name="notification_private_message_hidden">Desbloquea para ver el mensaje</string>
     <plurals name="notification_private_message_summary">
-        <item quantity="one">%1$d new message</item>
-        <item quantity="other">%1$d new messages</item>
+        <item quantity="one">%1$d mensaje nuevo</item>
+        <item quantity="other">%1$d mensajes nuevos</item>
     </plurals>
 </resources>
