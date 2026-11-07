@@ -404,7 +404,7 @@ class MediaSendingManagerMigrationTest {
         assertTrue(fileEcho.deliveryStatus is DeliveryStatus.Failed)
         assertTrue(
             messages.single { it.sender == "system" }
-                .content.contains("could not be committed")
+                .content.contains("no se ha podido completar el envío")
         )
     }
 
@@ -418,9 +418,9 @@ class MediaSendingManagerMigrationTest {
 
             val messages = state.privateChats.value[peerID].orEmpty()
             assertEquals(1, messages.size)
-            assertTrue(messages.single().content.contains("too large"))
+            assertTrue(messages.single().content.contains("demasiado grande"))
             assertTrue(messages.none { it.type == com.bitchat.android.model.BitchatMessageType.Image })
-            assertTrue(state.getMessagesValue().none { it.content.contains("too large") })
+            assertTrue(state.getMessagesValue().none { it.content.contains("demasiado grande") })
             verify(mesh, never()).prepareFilePrivate(any(), any(), any(), any())
         } finally {
             bigFile.delete()
@@ -437,8 +437,8 @@ class MediaSendingManagerMigrationTest {
 
             val channelMessages = state.getChannelMessagesValue()["#test"].orEmpty()
             assertEquals(1, channelMessages.size)
-            assertTrue(channelMessages.single().content.contains("too large"))
-            assertTrue(state.getMessagesValue().none { it.content.contains("too large") })
+            assertTrue(channelMessages.single().content.contains("demasiado grande"))
+            assertTrue(state.getMessagesValue().none { it.content.contains("demasiado grande") })
             verify(mesh, never()).prepareFilePrivate(any(), any(), any(), any())
         } finally {
             bigFile.delete()
