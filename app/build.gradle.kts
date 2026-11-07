@@ -125,6 +125,11 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    // Posta: solo español, también en los textos de las bibliotecas de Android.
+    androidResources {
+        localeFilters += listOf("es")
+    }
+
     lint {
         baseline = file("lint-baseline.xml")
         abortOnError = false
