@@ -91,6 +91,8 @@ val sharedSourceIncludes = listOf(
     "com/bitchat/android/crypto/**",
     "com/bitchat/android/identity/**",
     "com/bitchat/android/mesh/**",
+    // Posta: the shared power policy reads the survival-mode settings.
+    "com/bitchat/android/posta/PostaSettings.kt",
     "com/bitchat/android/model/**",
     "com/bitchat/android/sync/**",
     "com/bitchat/android/favorites/**",
