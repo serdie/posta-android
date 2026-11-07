@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="posta_status_bar_label">Estado rápido</string>
+    <string name="posta_status_ok">Estoy bien</string>
+    <string name="posta_status_meeting">Voy al punto de encuentro</string>
+    <string name="posta_status_help">Necesito ayuda</string>
+    <string name="posta_status_medical">Urgencia médica</string>
+    <string name="posta_status_confirm_title">¿Enviar «%1$s»?</string>
+    <string name="posta_status_dest_private">En privado y cifrado de extremo a extremo, solo a esta conversación.</string>
+    <string name="posta_status_dest_channel">Al canal %1$s.</string>
+    <string name="posta_status_dest_public">A todas las personas cercanas de la malla. Es público: cualquiera al alcance puede leerlo.</string>
+    <string name="posta_status_note_label">Nota breve (opcional)</string>
+    <string name="posta_status_note_hint">p. ej. en la fuente de la plaza</string>
+    <string name="posta_status_send">Enviar</string>
+    <string name="posta_status_cancel">Cancelar</string>
+    <string name="posta_status_disclaimer">La entrega no está garantizada. Si puedes, llama al 112.</string>
+    <string name="posta_status_preview_label">Se enviará así</string>
+    <string name="about_tagline">Mensajería sin red para emergencias · basada en Bitchat (GPL-3.0)</string>
+</resources>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Posta-specific strings. Kept apart from strings.xml so upstream Bitchat merges stay clean. -->
+<resources>
+    <string name="posta_status_bar_label">Quick status</string>
+    <string name="posta_status_ok">I\'m OK</string>
+    <string name="posta_status_meeting">Going to meeting point</string>
+    <string name="posta_status_help">I need help</string>
+    <string name="posta_status_medical">Medical emergency</string>
+    <string name="posta_status_confirm_title">Send “%1$s”?</string>
+    <string name="posta_status_dest_private">Private and end-to-end encrypted, only to this conversation.</string>
+    <string name="posta_status_dest_channel">To channel %1$s.</string>
+    <string name="posta_status_dest_public">To everyone nearby on the mesh. It is public: anyone in range can read it.</string>
+    <string name="posta_status_note_label">Short note (optional)</string>
+    <string name="posta_status_note_hint">e.g. at the fountain in the main square</string>
+    <string name="posta_status_send">Send</string>
+    <string name="posta_status_cancel">Cancel</string>
+    <string name="posta_status_disclaimer">Delivery is not guaranteed. If you can, call 112.</string>
+    <string name="posta_status_preview_label">Will be sent as</string>
+</resources>

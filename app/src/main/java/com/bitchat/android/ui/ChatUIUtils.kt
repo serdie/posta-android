@@ -13,6 +13,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.sp
 import com.bitchat.android.model.BitchatMessage
+import com.bitchat.android.posta.color
 import com.bitchat.android.ui.theme.BASE_FONT_SIZE
 import com.bitchat.android.ui.theme.BitchatPalette
 import com.bitchat.android.ui.theme.ChatVisualTokens
@@ -220,9 +221,34 @@ fun formatTextMessageBody(
 ): AnnotatedString {
     val builder = AnnotatedString.Builder()
 
+    // Posta: emergency statuses get a bold, colour-coded header so they stand out in a
+    // busy channel. The rest of the message (the optional note) is formatted as usual.
+    val postaStatus = com.bitchat.android.posta.PostaStatus.parse(message.content)
+    val bodyContent = if (postaStatus != null) {
+        val tint = postaStatus.status.severity.color()
+        builder.pushStyle(
+            SpanStyle(
+                color = tint,
+                background = tint.copy(alpha = 0.14f),
+                fontWeight = FontWeight.Bold,
+                fontSize = BASE_FONT_SIZE.sp,
+            )
+        )
+        builder.append(postaStatus.status.header)
+        builder.pop()
+        if (postaStatus.note != null) {
+            builder.pushStyle(SpanStyle(color = contentColor, fontSize = BASE_FONT_SIZE.sp))
+            builder.append(com.bitchat.android.posta.PostaStatus.NOTE_SEPARATOR)
+            builder.pop()
+        }
+        postaStatus.note.orEmpty()
+    } else {
+        message.content
+    }
+
     appendIOSFormattedContent(
         builder = builder,
-        content = message.content,
+        content = bodyContent,
         currentUserNickname = currentUserNickname,
         palette = palette,
         contentColor = contentColor,

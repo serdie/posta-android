@@ -423,7 +423,12 @@ fun ChatScreen(viewModel: ChatViewModel) {
             viewModel.sendFileNote(peer, onionOrChannel, path)
         },
         recorderFactory = viewModel::createVoiceRecorder,
-        
+        onSendStatus = { status ->
+            viewModel.sendMessage(status) { accepted ->
+                if (accepted) forceScrollToBottom = !forceScrollToBottom
+            }
+        },
+
         showCommandSuggestions = showCommandSuggestions,
         commandSuggestions = commandSuggestions,
         showMentionSuggestions = showMentionSuggestions,
@@ -681,6 +686,8 @@ fun ChatInputSection(
     colorScheme: ColorScheme,
     showMediaButtons: Boolean,
     recorderFactory: ((String?, String?) -> com.bitchat.android.features.voice.VoiceRecorder)? = null,
+    // Posta: one-tap emergency statuses above the composer. Null hides the bar.
+    onSendStatus: ((String) -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     val context = androidx.compose.ui.platform.LocalContext.current
@@ -752,6 +759,13 @@ fun ChatInputSection(
                 )
                 HorizontalDivider(thickness = 1.dp, color = colorScheme.outlineVariant)
             }
+        }
+        if (onSendStatus != null) {
+            com.bitchat.android.posta.PostaStatusBar(
+                selectedPrivatePeer = selectedPrivatePeer,
+                currentChannel = currentChannel,
+                onSend = onSendStatus,
+            )
         }
         MessageInput(
             value = messageText,

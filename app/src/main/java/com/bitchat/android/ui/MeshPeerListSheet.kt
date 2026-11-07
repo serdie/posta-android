@@ -1875,6 +1875,11 @@ fun PrivateChatSheet(
                             viewModel.sendFileNote(peer, channel, path)
                         },
                         recorderFactory = viewModel::createVoiceRecorder,
+                        onSendStatus = { status ->
+                            viewModel.sendMessage(status) { accepted ->
+                                if (accepted) forceScrollToBottom = !forceScrollToBottom
+                            }
+                        },
                         showCommandSuggestions = false,
                         commandSuggestions = emptyList(),
                         showMentionSuggestions = false,

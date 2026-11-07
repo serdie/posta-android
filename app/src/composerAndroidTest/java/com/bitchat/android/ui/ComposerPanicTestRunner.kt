@@ -7,7 +7,7 @@ import androidx.test.runner.AndroidJUnitRunner
 /** Synthetic offline configuration; preserves the real Application and ViewModel startup. */
 class ComposerPanicTestRunner : AndroidJUnitRunner() {
     override fun callApplicationOnCreate(app: Application) {
-        check(app.packageName == "com.bitchat.droid.composerTest") {
+        check(app.packageName == "org.posta.app.composerTest") {
             "Panic tests require the dedicated composer test installation"
         }
         app.getSharedPreferences("bitchat_permissions", Context.MODE_PRIVATE).edit()

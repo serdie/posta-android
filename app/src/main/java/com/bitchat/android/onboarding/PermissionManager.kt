@@ -274,7 +274,7 @@ class PermissionManager(private val context: Context) {
                 description = "Required by Android to discover nearby bitchat users via Bluetooth",
                 permissions = locationPermissions,
                 isGranted = locationPermissions.all { isPermissionGranted(it) },
-                systemDescription = "bitchat needs this to scan for nearby devices"
+                systemDescription = "Posta needs this to scan for nearby devices"
             )
         )
 
