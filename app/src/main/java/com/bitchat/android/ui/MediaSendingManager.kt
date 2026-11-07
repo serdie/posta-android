@@ -98,7 +98,7 @@ class MediaSendingManager(
         Log.e(TAG, "❌ File too large: $size bytes (max: $MAX_FILE_SIZE)")
         val sizeMb = size / (1024 * 1024)
         val maxMb = MAX_FILE_SIZE / (1024 * 1024)
-        val text = "cannot send ${file.name}: file is too large (${sizeMb} MB, max $maxMb MB)"
+        val text = "no se puede enviar ${file.name}: es demasiado grande (${sizeMb} MB, máximo $maxMb MB)"
         when {
             toPeerIDOrNull != null -> {
                 val sys = BitchatMessage(
@@ -305,7 +305,7 @@ class MediaSendingManager(
             ?: run {
                 addPrivateMediaSystemMessage(
                     toPeerID,
-                    "Private media was not sent because this conversation has no active mesh route."
+                    "El archivo privado no se ha enviado: no hay camino por la malla hasta esta persona."
                 )
                 return
             }
@@ -323,7 +323,7 @@ class MediaSendingManager(
         if (!reserveAutomaticPending(pending)) {
             addPrivateMediaSystemMessage(
                 recipient.conversationID,
-                "Private media was not sent because another secure media send is still pending."
+                "El archivo privado no se ha enviado: hay otro envío seguro en curso."
             )
             return
         }
@@ -356,7 +356,7 @@ class MediaSendingManager(
         if (!reserveAutomaticPending(automatic)) {
             addPrivateMediaSystemMessage(
                 pending.conversationID,
-                "Private media was not sent because another secure media send is still pending."
+                "El archivo privado no se ha enviado: hay otro envío seguro en curso."
             )
             return
         }
@@ -464,7 +464,7 @@ class MediaSendingManager(
                     Log.w(TAG, "Legacy consent was consumed but policy still requested consent; send aborted")
                     addPrivateMediaSystemMessage(
                         pending.conversationID,
-                        "Private media was not sent because its security policy changed."
+                        "El archivo privado no se ha enviado: ha cambiado su política de seguridad."
                     )
                     return
                 }
@@ -517,7 +517,7 @@ class MediaSendingManager(
                 Log.w(TAG, "Private media not sent: ${preparation.reason}")
                 addPrivateMediaSystemMessage(
                     pending.conversationID,
-                    "Private media was not sent: ${preparation.reason}"
+                    "El archivo privado no se ha enviado: ${preparation.reason}"
                 )
             }
         }
@@ -557,7 +557,7 @@ class MediaSendingManager(
             if (expired) {
                 addPrivateMediaSystemMessage(
                     pending.conversationID,
-                    "Private media was not sent because secure session setup timed out."
+                    "El archivo privado no se ha enviado: se agotó el tiempo para crear la sesión cifrada."
                 )
             }
         }
@@ -634,7 +634,7 @@ class MediaSendingManager(
             Log.e(TAG, "Prepared private-media message could not be persisted; send aborted")
             addPrivateMediaSystemMessage(
                 conversationID,
-                "Private media was not sent because the conversation could not be saved."
+                "El archivo privado no se ha enviado: no se ha podido guardar la conversación."
             )
             return
         }
@@ -661,7 +661,7 @@ class MediaSendingManager(
             Log.w(TAG, "Prepared private-media commit failed; local echo marked failed")
             addPrivateMediaSystemMessage(
                 conversationID,
-                "Private media was not sent because the prepared transfer could not be committed."
+                "El archivo privado no se ha enviado: no se ha podido completar el envío."
             )
             return
         }
@@ -773,7 +773,7 @@ class MediaSendingManager(
             if (evt.failed) {
                 messageManager.updateMessageDeliveryStatus(
                     msgId,
-                    com.bitchat.android.model.DeliveryStatus.Failed("transfer could not be sent")
+                    com.bitchat.android.model.DeliveryStatus.Failed("no se ha podido enviar")
                 )
                 synchronized(transferMessageMap) {
                     val msgIdRemoved = transferMessageMap.remove(evt.transferId)

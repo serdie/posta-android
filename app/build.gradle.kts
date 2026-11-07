@@ -36,8 +36,8 @@ android {
         applicationId = "org.posta.app"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
-        versionCode = 3
-        versionName = "0.2.0" // Posta 0.2.0, basada en Bitchat Android 2.2.0
+        versionCode = 4
+        versionName = "0.3.0" // Posta 0.3.0, basada en Bitchat Android 2.2.0
         buildConfigField(
             "String",
             "GITHUB_RELEASE_CERT_SHA256",

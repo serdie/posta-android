@@ -75,7 +75,7 @@ class PrivateMediaTransferPreparerTest {
             finalizer = { null }
         ).prepare("peer", recipientID, file(64), true)
         assertTrue(signingFailure is PrivateMediaBuildOutcome.Rejected)
-        assertTrue((signingFailure as PrivateMediaBuildOutcome.Rejected).reason.contains("nothing was sent"))
+        assertTrue((signingFailure as PrivateMediaBuildOutcome.Rejected).reason.contains("no se ha enviado nada"))
 
         val malformedSignature = preparer(
             policy = PrivateMediaPolicyDecision.RequiresLegacyConsent,

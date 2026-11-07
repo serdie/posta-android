@@ -26,7 +26,7 @@ class PostaLocationAndSosTest {
     @Test
     fun `status with note and location round-trips`() {
         val wire = PostaStatus.NEED_HELP.toWire("portal 3", point)
-        assertEquals("🟠 NECESITO AYUDA / I NEED HELP — portal 3 · 📍 10.12345,-20.54321 (±12 m)", wire)
+        assertEquals("🟠 NECESITO AYUDA — portal 3 · 📍 10.12345,-20.54321 (±12 m)", wire)
         val parsed = PostaStatus.parse(wire)!!
         assertEquals(PostaStatus.NEED_HELP, parsed.status)
         assertEquals("portal 3", parsed.note)
@@ -36,7 +36,7 @@ class PostaLocationAndSosTest {
     @Test
     fun `status with only location round-trips`() {
         val wire = PostaStatus.MEDICAL.toWire(null, PostaCoordinates(-1.5, 2.25))
-        assertEquals("🔴 URGENCIA MÉDICA / MEDICAL EMERGENCY — 📍 -1.50000,2.25000", wire)
+        assertEquals("🔴 URGENCIA MÉDICA — 📍 -1.50000,2.25000", wire)
         val parsed = PostaStatus.parse(wire)!!
         assertNull(parsed.note)
         assertEquals(PostaCoordinates(-1.5, 2.25), parsed.location)
@@ -44,7 +44,7 @@ class PostaLocationAndSosTest {
 
     @Test
     fun `location in the middle of a note is not extracted`() {
-        val parsed = PostaStatus.parse("🟢 ESTOY BIEN / I'M OK — 📍 1.00000,2.00000 era donde estaba antes")!!
+        val parsed = PostaStatus.parse("🟢 ESTOY BIEN — 📍 1.00000,2.00000 era donde estaba antes")!!
         assertNull(parsed.location)
     }
 

@@ -19,35 +19,44 @@ class PostaStatusTest {
     @Test
     fun `note round-trips and is trimmed`() {
         val wire = PostaStatus.NEED_HELP.toWire("  portal 3, segundo piso  ")
-        assertEquals("🟠 NECESITO AYUDA / I NEED HELP — portal 3, segundo piso", wire)
+        assertEquals("🟠 NECESITO AYUDA — portal 3, segundo piso", wire)
         val parsed = PostaStatus.parse(wire)
         assertEquals(PostaStatus.NEED_HELP, parsed?.status)
         assertEquals("portal 3, segundo piso", parsed?.note)
     }
 
     @Test
-    fun `wire format is stable and bilingual`() {
-        assertEquals("🟢 ESTOY BIEN / I'M OK", PostaStatus.OK.toWire())
-        assertEquals("🔴 URGENCIA MÉDICA / MEDICAL EMERGENCY", PostaStatus.MEDICAL.toWire(""))
+    fun `wire format is stable and only in Spanish`() {
+        assertEquals("🟢 ESTOY BIEN", PostaStatus.OK.toWire())
+        assertEquals("🔴 URGENCIA MÉDICA", PostaStatus.MEDICAL.toWire(""))
+    }
+
+    @Test
+    fun `messages from Posta 0_1 and 0_2 are still recognised`() {
+        val old = PostaStatus.parse("🟠 NECESITO AYUDA / I NEED HELP — portal 3")
+        assertEquals(PostaStatus.NEED_HELP, old?.status)
+        assertEquals("portal 3", old?.note)
+        assertEquals(PostaStatus.OK, PostaStatus.parse("🟢 ESTOY BIEN / I'M OK")?.status)
+        assertNull(PostaStatus.parse("🟢 ESTOY BIEN / I'M OKAY")?.note)
     }
 
     @Test
     fun `ordinary messages are not statuses`() {
         assertNull(PostaStatus.parse("estoy bien, gracias"))
-        assertNull(PostaStatus.parse("hola 🟢 ESTOY BIEN / I'M OK"))
+        assertNull(PostaStatus.parse("hola 🟢 ESTOY BIEN"))
         assertNull(PostaStatus.parse("🟢 ESTOY BIENVENIDO"))
-        assertNull(PostaStatus.parse("🟢 ESTOY BIEN / I'M OKAY"))
+        assertNull(PostaStatus.parse("🟢 ESTOY BIEN, gracias"))
         assertNull(PostaStatus.parse(""))
     }
 
     @Test
     fun `leading whitespace is tolerated`() {
-        assertEquals(PostaStatus.OK, PostaStatus.parse("  🟢 ESTOY BIEN / I'M OK")?.status)
+        assertEquals(PostaStatus.OK, PostaStatus.parse("  🟢 ESTOY BIEN")?.status)
     }
 
     @Test
     fun `empty note after separator is treated as no note`() {
-        val parsed = PostaStatus.parse("🟢 ESTOY BIEN / I'M OK — ")
+        val parsed = PostaStatus.parse("🟢 ESTOY BIEN — ")
         assertEquals(PostaStatus.OK, parsed?.status)
         assertNull(parsed?.note)
     }

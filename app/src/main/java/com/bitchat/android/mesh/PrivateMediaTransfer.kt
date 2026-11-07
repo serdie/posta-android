@@ -99,7 +99,7 @@ internal class PrivateMediaTransferPreparer(
         // and packet serialization make additional full-size copies.
         if (file.content.size.toLong() > absolutePayloadUpperBound) {
             return PrivateMediaBuildOutcome.Rejected(
-                "File exceeds the private-media v1 limit of 256 final mesh fragments"
+                "El archivo es demasiado grande para enviarlo en privado por la malla (máximo 256 fragmentos)"
             )
         }
 
@@ -110,8 +110,8 @@ internal class PrivateMediaTransferPreparer(
                 if (!allowLegacyFallback) {
                     return PrivateMediaBuildOutcome.RequiresLegacyConsent(
                         "This older client cannot receive encrypted private media. " +
-                            "Sending this one file will expose its contents to mesh relays, " +
-                            "although the directed packet will still be signed."
+                            "Si envías este archivo, los teléfonos intermedios podrán ver su contenido, " +
+                            "aunque seguirá firmado."
                     )
                 }
                 PrivateMediaWireMode.SIGNED_DIRECTED_RAW_0X22
@@ -125,7 +125,7 @@ internal class PrivateMediaTransferPreparer(
         }
 
         val filePayload = file.encode()
-            ?: return PrivateMediaBuildOutcome.Rejected("Failed to encode private media")
+            ?: return PrivateMediaBuildOutcome.Rejected("No se ha podido preparar el archivo")
 
         val packet = when (mode) {
             PrivateMediaWireMode.ENCRYPTED_NOISE_0X20 -> {
@@ -155,7 +155,7 @@ internal class PrivateMediaTransferPreparer(
                     }
                     PrivateMediaEncryptionResult.Failed ->
                         return PrivateMediaBuildOutcome.Rejected(
-                            "The authenticated Noise session could not encrypt this file"
+                            "La sesión cifrada no ha podido cifrar este archivo"
                         )
                 }
                 BitchatPacket(
@@ -185,26 +185,26 @@ internal class PrivateMediaTransferPreparer(
         val finalized = finalizeRoutedAndSigned(packet)
             ?: return PrivateMediaBuildOutcome.Rejected(
                 if (mode == PrivateMediaWireMode.SIGNED_DIRECTED_RAW_0X22) {
-                    "Could not sign the legacy private-media packet; nothing was sent"
+                    "No se ha podido firmar el archivo; no se ha enviado nada"
                 } else {
-                    "Could not sign the encrypted private-media packet; nothing was sent"
+                    "No se ha podido firmar el archivo cifrado; no se ha enviado nada"
                 }
             )
         if (finalized.signature?.size != 64) {
             return PrivateMediaBuildOutcome.Rejected(
-                "Could not produce a valid Ed25519 private-media signature; nothing was sent"
+                "No se ha podido generar una firma válida; no se ha enviado nada"
             )
         }
 
         val fragments = fragment(finalized, maxPrivateFragments)
         if (fragments.isEmpty()) {
             return PrivateMediaBuildOutcome.Rejected(
-                "File exceeds the private-media v1 limit of 256 final mesh fragments"
+                "El archivo es demasiado grande para enviarlo en privado por la malla (máximo 256 fragmentos)"
             )
         }
         if (fragments.size > maxPrivateFragments) {
             return PrivateMediaBuildOutcome.Rejected(
-                "File exceeds the private-media v1 limit of 256 final mesh fragments"
+                "El archivo es demasiado grande para enviarlo en privado por la malla (máximo 256 fragmentos)"
             )
         }
 

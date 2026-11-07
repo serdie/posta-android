@@ -80,7 +80,7 @@ private fun LocationNotesAcquiringSheet(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Acquiring Location",
+                text = "Buscando ubicación",
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )
@@ -91,7 +91,7 @@ private fun LocationNotesAcquiringSheet(
             )
             Spacer(modifier = Modifier.height(24.dp))
             Text(
-                text = "Please wait while your location is being determined",
+                text = "Espera mientras se calcula tu ubicación",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -121,13 +121,13 @@ private fun LocationNotesErrorSheet(
                 verticalArrangement = Arrangement.Center,
             ) {
                 Text(
-                    text = "Location Unavailable",
+                    text = "Ubicación no disponible",
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = "Location permission is required for notes",
+                    text = "Las notas del lugar necesitan el permiso de ubicación",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -139,7 +139,7 @@ private fun LocationNotesErrorSheet(
                     locationManager.enableLocationChannels()
                     locationManager.refreshChannels()
                 }) {
-                    Text("Enable Location")
+                    Text("Activar ubicación")
                 }
             }
 

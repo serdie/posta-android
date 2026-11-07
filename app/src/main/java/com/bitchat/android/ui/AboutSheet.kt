@@ -555,8 +555,8 @@ fun AboutSheet(
 
                                     SettingsToggleRow(
                                         icon = Icons.Filled.Mic,
-                                        title = "Live push-to-talk",
-                                        subtitle = "Play voice bursts live on the mesh; voice notes are always sent on release",
+                                        title = "Hablar en directo (walkie)",
+                                        subtitle = "Reproduce la voz en directo por la malla; las notas de voz se envían siempre al soltar",
                                         checked = liveVoiceEnabled,
                                         onCheckedChange = { enabled ->
                                             liveVoiceEnabled = enabled

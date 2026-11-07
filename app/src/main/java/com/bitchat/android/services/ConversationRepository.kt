@@ -102,7 +102,7 @@ class ConversationRepository internal constructor(
             } catch (error: Exception) {
                 Log.e(TAG, "Unable to restore private conversations", error)
                 _storeState.value = ConversationStoreState.Error(
-                    error.message ?: "Unable to restore conversations"
+                    error.message ?: "No se han podido recuperar las conversaciones"
                 )
             }
         }
@@ -123,7 +123,7 @@ class ConversationRepository internal constructor(
         } catch (error: Exception) {
             Log.e(TAG, "Unable to load private conversation", error)
             _storeState.value = ConversationStoreState.Error(
-                error.message ?: "Unable to load conversation"
+                error.message ?: "No se ha podido cargar la conversación"
             )
             null
         }
@@ -171,7 +171,7 @@ class ConversationRepository internal constructor(
     } catch (error: Exception) {
         Log.e(TAG, "Unable to persist private message", error)
         _storeState.value = ConversationStoreState.Error(
-            error.message ?: "Unable to save conversation"
+            error.message ?: "No se ha podido guardar la conversación"
         )
         false
     }
@@ -208,7 +208,7 @@ class ConversationRepository internal constructor(
         } catch (error: Exception) {
             Log.e(TAG, "Unable to update conversation read state", error)
             _storeState.value = ConversationStoreState.Error(
-                error.message ?: "Unable to update conversation"
+                error.message ?: "No se ha podido actualizar la conversación"
             )
             ConversationReadResult(success = false)
         }
@@ -273,7 +273,7 @@ class ConversationRepository internal constructor(
         } catch (error: Exception) {
             Log.e(TAG, "Unable to restore deleted conversation", error)
             _storeState.value = ConversationStoreState.Error(
-                error.message ?: "Unable to restore conversation"
+                error.message ?: "No se ha podido recuperar la conversación"
             )
             false
         }
@@ -289,7 +289,7 @@ class ConversationRepository internal constructor(
     } catch (error: Exception) {
         Log.e(TAG, "Unable to delete private conversation", error)
         _storeState.value = ConversationStoreState.Error(
-            error.message ?: "Unable to delete conversation"
+            error.message ?: "No se ha podido borrar la conversación"
         )
         false
     }
@@ -319,7 +319,7 @@ class ConversationRepository internal constructor(
             Log.e(TAG, "Unable to synchronously clear private conversations", error)
             database.destroyStorage()
             _storeState.value = ConversationStoreState.Error(
-                error.message ?: "Unable to erase conversations"
+                error.message ?: "No se han podido borrar las conversaciones"
             )
             false
         }

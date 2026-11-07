@@ -138,7 +138,7 @@ class HotspotManager(private val context: Context) {
 
         if (wifiP2pManager == null) {
             Log.e(TAG, "Wi-Fi P2P not available on this device")
-            callback.onError("Wi-Fi Direct not supported on this device")
+            callback.onError("Este móvil no es compatible con Wi‑Fi Direct")
             return
         }
 
@@ -146,9 +146,9 @@ class HotspotManager(private val context: Context) {
         if (missingPermissions.isNotEmpty()) {
             Log.w(TAG, "Cannot start hotspot; missing required permissions: $missingPermissions")
             val message = if (Manifest.permission.ACCESS_LOCAL_NETWORK in missingPermissions) {
-                "Local network permission is required to share the app over the hotspot"
+                "Hace falta el permiso de red local para compartir la app por wifi"
             } else {
-                "Nearby Wi-Fi permission is required to start the hotspot"
+                "Hace falta el permiso de dispositivos wifi cercanos para crear la red"
             }
             callback.onError(message)
             return
@@ -411,7 +411,7 @@ class HotspotManager(private val context: Context) {
             }
         } catch (e: SecurityException) {
             Log.e(TAG, "Wi-Fi permission was revoked while reading P2P state", e)
-            failStartup("A required Wi-Fi or local network permission was revoked. Grant it and try again.")
+            failStartup("Se ha retirado un permiso de wifi o de red local necesario. Concédelo y vuelve a intentarlo.")
         }
     }
 
@@ -459,7 +459,7 @@ class HotspotManager(private val context: Context) {
             }
         } catch (e: SecurityException) {
             Log.e(TAG, "Wi-Fi permission was revoked while reading group info", e)
-            failStartup("A required Wi-Fi or local network permission was revoked. Grant it and try again.")
+            failStartup("Se ha retirado un permiso de wifi o de red local necesario. Concédelo y vuelve a intentarlo.")
         }
     }
 
@@ -480,7 +480,7 @@ class HotspotManager(private val context: Context) {
             })
         } catch (e: SecurityException) {
             Log.e(TAG, "Wi-Fi permission was revoked while removing the existing group", e)
-            failStartup("A required Wi-Fi or local network permission was revoked. Grant it and try again.")
+            failStartup("Se ha retirado un permiso de wifi o de red local necesario. Concédelo y vuelve a intentarlo.")
         }
     }
 
@@ -519,7 +519,7 @@ class HotspotManager(private val context: Context) {
             }
         } catch (e: SecurityException) {
             Log.e(TAG, "Wi-Fi permission was revoked while creating the group", e)
-            failStartup("A required Wi-Fi or local network permission was revoked. Grant it and try again.")
+            failStartup("Se ha retirado un permiso de wifi o de red local necesario. Concédelo y vuelve a intentarlo.")
         }
     }
 
@@ -621,7 +621,7 @@ class HotspotManager(private val context: Context) {
                     elapsedMillis >= GROUP_FORMATION_TIMEOUT_MILLIS
                 ) {
                     Log.e(TAG, "Group never formed within ${GROUP_FORMATION_TIMEOUT_MILLIS}ms")
-                    failStartup("Hotspot failed to start. Please try again.")
+                    failStartup("No se ha podido crear la red wifi. Inténtalo de nuevo.")
                     return
                 }
 
@@ -690,7 +690,7 @@ class HotspotManager(private val context: Context) {
             }
         } catch (e: SecurityException) {
             Log.e(TAG, "Wi-Fi permission was revoked while reading group info", e)
-            failStartup("A required Wi-Fi or local network permission was revoked. Grant it and try again.")
+            failStartup("Se ha retirado un permiso de wifi o de red local necesario. Concédelo y vuelve a intentarlo.")
         }
     }
 

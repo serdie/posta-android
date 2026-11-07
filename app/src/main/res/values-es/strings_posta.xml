@@ -15,7 +15,6 @@
     <string name="posta_status_cancel">Cancelar</string>
     <string name="posta_status_disclaimer">La entrega no está garantizada. Si puedes, llama al 112.</string>
     <string name="posta_status_preview_label">Se enviará así</string>
-    <string name="about_tagline">Mensajería sin red para emergencias · basada en Bitchat (GPL-3.0)</string>
     <string name="posta_location_toggle">Añadir mi ubicación GPS</string>
     <string name="posta_location_toggle_help">El GPS funciona sin internet ni cobertura. Se lee una vez, solo ahora.</string>
     <string name="posta_location_no_permission">El permiso de ubicación está desactivado. Actívalo en los ajustes de Android para compartir tu posición.</string>

@@ -10,16 +10,16 @@ object NotificationTextUtils {
     /**
      * Build a user-friendly notification preview for private messages, especially attachments.
      * Examples:
-     * - Image: "📷 sent an image"
-     * - Audio: "🎤 sent a voice message"
+     * - Image: "📷 ha enviado una imagen"
+     * - Audio: "🎤 ha enviado un mensaje de voz"
      * - File (pdf): "📄 file.pdf"
      * - Text: original message content
      */
     fun buildPrivateMessagePreview(message: BitchatMessage): String {
         return try {
             when (message.type) {
-                BitchatMessageType.Image -> "📷 sent an image"
-                BitchatMessageType.Audio -> "🎤 sent a voice message"
+                BitchatMessageType.Image -> "📷 ha enviado una imagen"
+                BitchatMessageType.Audio -> "🎤 ha enviado un mensaje de voz"
                 BitchatMessageType.File -> {
                     // Show just the filename (not the full path)
                     val name = try { java.io.File(message.content).name } catch (_: Exception) { null }
@@ -35,7 +35,7 @@ object NotificationTextUtils {
                         }
                         "$icon $name"
                     } else {
-                        "📎 sent a file"
+                        "📎 ha enviado un archivo"
                     }
                 }
                 else -> message.content

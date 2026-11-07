@@ -142,7 +142,7 @@ fun VerificationSheet(
                     onClick = { selectedTab = 0 },
                     text = {
                         Text(
-                            text = "My QR",
+                            text = "Mi QR",
                             fontFamily = BitchatFontFamily,
                             fontSize = 14.sp
                         )
@@ -153,7 +153,7 @@ fun VerificationSheet(
                     onClick = { selectedTab = 1 },
                     text = {
                         Text(
-                            text = "Scan",
+                            text = "Escanear",
                             fontFamily = BitchatFontFamily,
                             fontSize = 14.sp
                         )

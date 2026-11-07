@@ -14,13 +14,13 @@ internal object HotspotStartupPolicy {
     const val MAX_RETRY_DELAY_MILLIS = 8_000L
 
     const val P2P_DISABLED_MESSAGE =
-        "Wi-Fi Direct is unavailable. Turn Wi-Fi off and back on, then try again."
+        "Wi‑Fi Direct no está disponible. Apaga y enciende el wifi y vuelve a intentarlo."
     /** Marks groups this app creates. Shared with [HotspotManager] so the two cannot drift. */
     const val SSID_PREFIX = "DIRECT-BC-" // BC for BitChat
 
-    const val P2P_UNSUPPORTED_MESSAGE = "Wi-Fi Direct is not supported on this device."
-    const val P2P_BUSY_MESSAGE = "Wi-Fi Direct is busy. Please try again in a moment."
-    const val GENERIC_FAILURE_MESSAGE = "Failed to start the hotspot. Please try again."
+    const val P2P_UNSUPPORTED_MESSAGE = "Este móvil no es compatible con Wi‑Fi Direct."
+    const val P2P_BUSY_MESSAGE = "Wi‑Fi Direct está ocupado. Inténtalo en un momento."
+    const val GENERIC_FAILURE_MESSAGE = "No se ha podido crear la red wifi. Inténtalo de nuevo."
 
     sealed interface Decision {
         data class Retry(val delayMillis: Long) : Decision

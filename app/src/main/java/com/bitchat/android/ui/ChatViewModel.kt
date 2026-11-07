@@ -441,7 +441,7 @@ class ChatViewModel(
             com.bitchat.android.services.MessageRouter.getInstance(getApplication(), mesh).onMessageExpired = { messageID ->
                 messageManager.updateMessageDeliveryStatus(
                     messageID,
-                    com.bitchat.android.model.DeliveryStatus.Failed("Message expired before delivery")
+                    com.bitchat.android.model.DeliveryStatus.Failed("El mensaje caducó antes de entregarse")
                 )
             }
         } catch (_: Exception) { }

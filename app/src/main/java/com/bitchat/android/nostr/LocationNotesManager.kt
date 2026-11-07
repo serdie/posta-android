@@ -218,7 +218,7 @@ class LocationNotesManager private constructor() {
         val currentGeohash = _geohash.value
         if (currentGeohash == null) {
             Log.w(TAG, "Cannot send note - no geohash set")
-            _errorMessage.value = "No location set"
+            _errorMessage.value = "No hay ubicación"
             return
         }
         
@@ -246,14 +246,14 @@ class LocationNotesManager private constructor() {
         if (relays.isEmpty()) {
             Log.w(TAG, "Location-note send blocked because no relays are available")
             _state.value = State.NO_RELAYS
-            _errorMessage.value = "No relays available"
+            _errorMessage.value = "No hay repetidores disponibles"
             return
         }
         
         val deriveIdentity = deriveIdentityFunc
         if (deriveIdentity == null) {
             Log.e(TAG, "Cannot send note - deriveIdentity not initialized")
-            _errorMessage.value = "Not initialized"
+            _errorMessage.value = "Todavía no está listo"
             return
         }
         
@@ -315,7 +315,7 @@ class LocationNotesManager private constructor() {
                 
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to send note: ${e.message}")
-                _errorMessage.value = "Failed to send: ${e.message}"
+                _errorMessage.value = "No se ha podido enviar: ${e.message}"
             }
         }
     }

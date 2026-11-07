@@ -115,14 +115,14 @@ object PoWPreferenceManager {
      */
     fun getDifficultyLevels(): List<Pair<Int, String>> {
         return listOf(
-            0 to "Disabled (no PoW)",
-            8 to "Very Low (instant)",
-            12 to "Low (~0.1s)",
-            16 to "Medium (~2s)",
-            20 to "High (~30s)",
-            24 to "Very High (~8m)",
-            28 to "Extreme (~2h)",
-            32 to "Maximum (~8h)"
+            0 to "Desactivada (sin PoW)",
+            8 to "Muy baja (instantánea)",
+            12 to "Baja (~0,1 s)",
+            16 to "Media (~2 s)",
+            20 to "Alta (~30 s)",
+            24 to "Muy alta (~8 min)",
+            28 to "Extrema (~2 h)",
+            32 to "Máxima (~8 h)"
         )
     }
     

@@ -640,16 +640,16 @@ class MessageHandler(private val myPeerID: String, private val appContext: andro
                 val rel = com.bitchat.android.favorites.FavoritesPersistenceService.shared.getFavoriteStatus(noiseKey)
                 val guidance = if (control.isFavorite) {
                     if (rel?.isFavorite == true) {
-                        " — mutual! You can continue DMs via Nostr when out of mesh."
+                        " — ¡mutuo! Podréis seguir hablando por Nostr fuera de la malla."
                     } else {
-                        " — favorite back to continue DMs later."
+                        " — márcale como favorito para seguir hablando más tarde."
                     }
                 } else {
-                    ". DMs over Nostr will pause unless you both favorite again."
+                    ". Los mensajes por Nostr se pausan hasta que os volváis a marcar como favoritos."
                 }
 
-                val action = if (control.isFavorite) "favorited" else "unfavorited"
-                val notice = "${peerInfo.nickname} $action you$guidance"
+                val action = if (control.isFavorite) "te ha marcado como favorito" else "te ha quitado de favoritos"
+                val notice = "${peerInfo.nickname} $action$guidance"
                 val sys = com.bitchat.android.model.BitchatMessage(
                     sender = "system",
                     content = notice,

@@ -81,8 +81,8 @@ object DistributionInfoProvider {
             "org.fdroid.fdroid" -> "F-Droid"
             "com.android.packageinstaller",
             "com.google.android.packageinstaller",
-            "com.android.permissioncontroller" -> "Android package installer"
-            null -> if (BuildConfig.DEBUG) "ADB / local install" else "Unknown / local install"
+            "com.android.permissioncontroller" -> "Instalador de Android"
+            null -> if (BuildConfig.DEBUG) "ADB / instalación local" else "Desconocido / instalación local"
             else -> installerPackage
         }
     }
@@ -101,8 +101,8 @@ object DistributionInfoProvider {
                 "Universal (${packagedAbis.joinToString()})"
             packagedAbis.size > 1 -> "Multi-ABI (${packagedAbis.joinToString()})"
             packagedAbis.size == 1 -> packagedAbis.single()
-            splitApkPaths.isNotEmpty() -> "Device ABI (${Build.SUPPORTED_ABIS.firstOrNull() ?: "unknown"})"
-            else -> "Universal (no native ABI payload)"
+            splitApkPaths.isNotEmpty() -> "Del dispositivo (${Build.SUPPORTED_ABIS.firstOrNull() ?: "desconocido"})"
+            else -> "Universal (sin bibliotecas nativas)"
         }
     }
 
