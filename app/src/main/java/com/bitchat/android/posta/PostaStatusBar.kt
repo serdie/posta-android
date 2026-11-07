@@ -27,6 +27,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,6 +47,8 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bitchat.android.R
+import com.bitchat.android.geohash.ChannelID
+import com.bitchat.android.geohash.LocationChannelManager
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
@@ -83,6 +86,36 @@ fun PostaStatusBar(
     var pending by remember { mutableStateOf<PostaStatus?>(null) }
     var showSos by rememberSaveable { mutableStateOf(false) }
     val barLabel = stringResource(R.string.posta_status_bar_label)
+    val context = LocalContext.current
+    val locationChannels = remember { LocationChannelManager.getInstance(context) }
+    val selectedChannel by locationChannels.selectedChannel.collectAsState()
+    val geohashChannel = (selectedChannel as? ChannelID.Location)?.channel?.displayName
+    // Only the open Bluetooth mesh benefits from repeating: geohash channels go over the internet.
+    val isMeshPublic = selectedPrivatePeer == null && currentChannel == null && geohashChannel == null
+    val beacon by PostaBeacon.state.collectAsState()
+
+    beacon?.let { active ->
+        val parsed = remember(active.content) { PostaStatus.parse(active.content) }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp, vertical = 2.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = stringResource(
+                    R.string.posta_beacon_active,
+                    parsed?.let { "${it.status.emoji} ${stringResource(it.status.labelRes())}" } ?: "",
+                    active.repeats,
+                ),
+                style = MaterialTheme.typography.bodySmall,
+                color = (parsed?.status?.severity ?: PostaStatus.Severity.INFO).color(),
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.weight(1f),
+            )
+            TextButton(onClick = { PostaBeacon.stop() }) { Text(stringResource(R.string.posta_beacon_stop)) }
+        }
+    }
 
     Row(
         modifier = modifier
@@ -128,10 +161,13 @@ fun PostaStatusBar(
             status = status,
             selectedPrivatePeer = selectedPrivatePeer,
             currentChannel = currentChannel,
+            geohashChannel = geohashChannel,
+            willRepeat = isMeshPublic && PostaSettings.values.value.beaconEnabled,
             onDismiss = { pending = null },
             onConfirm = { wire ->
                 pending = null
                 onSend(wire)
+                if (isMeshPublic) PostaBeacon.start(wire)
             },
         )
     }
@@ -143,6 +179,8 @@ private fun PostaStatusConfirmDialog(
     status: PostaStatus,
     selectedPrivatePeer: String?,
     currentChannel: String?,
+    geohashChannel: String?,
+    willRepeat: Boolean,
     onDismiss: () -> Unit,
     onConfirm: (String) -> Unit,
 ) {
@@ -160,8 +198,13 @@ private fun PostaStatusConfirmDialog(
     val destination = when {
         selectedPrivatePeer != null -> stringResource(R.string.posta_status_dest_private)
         currentChannel != null -> stringResource(R.string.posta_status_dest_channel, currentChannel)
+        geohashChannel != null -> stringResource(R.string.posta_status_dest_geohash, geohashChannel)
         else -> stringResource(R.string.posta_status_dest_public)
     }
+    val repeatNote = if (willRepeat) {
+        val v = PostaSettings.values.value
+        stringResource(R.string.posta_beacon_will_repeat, v.beaconIntervalMin, v.beaconDurationHours)
+    } else null
     val msgNoPermission = stringResource(R.string.posta_location_no_permission)
     val msgOff = stringResource(R.string.posta_location_off)
     val msgTimeout = stringResource(R.string.posta_location_timeout)
@@ -215,6 +258,10 @@ private fun PostaStatusConfirmDialog(
         text = {
             Column {
                 Text(destination, style = MaterialTheme.typography.bodyMedium)
+                repeatNote?.let {
+                    Spacer(Modifier.height(4.dp))
+                    Text(it, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
                 Spacer(Modifier.height(12.dp))
                 OutlinedTextField(
                     value = note,

@@ -13,6 +13,9 @@ class BitchatApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
+        // Posta: advanced connectivity settings must be loaded before the power policy reads them.
+        com.bitchat.android.posta.PostaSettings.init(this)
+
         // Start the single process-wide power policy before transport components are constructed.
         com.bitchat.android.mesh.PowerManager.getInstance(this).start()
 

@@ -73,7 +73,9 @@ class PowerManager private constructor(context: Context) : LifecycleEventObserve
         val ble: BleSchedule,
         val meshAnnouncementIntervalMs: Long,
         val wifiAware: WifiAwareSchedule,
-        val nostr: NostrSchedule
+        val nostr: NostrSchedule,
+        /** Posta survival mode: fewer scans and announcements, same radio range. */
+        val postaSurvival: Boolean = false
     )
 
     companion object {
@@ -102,7 +104,8 @@ class PowerManager private constructor(context: Context) : LifecycleEventObserve
             batteryLevel = batteryLevel,
             isCharging = isCharging,
             isBackground = isAppInBackground,
-            hasDirectPeers = hasDirectPeers
+            hasDirectPeers = hasDirectPeers,
+            survival = postaSurvivalActive()
         )
     )
     val profile: StateFlow<RuntimePerformanceProfile> = _profile.asStateFlow()
@@ -143,6 +146,10 @@ class PowerManager private constructor(context: Context) : LifecycleEventObserve
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to register process lifecycle observer: ${e.message}")
             }
+        }
+        scope.launch {
+            // Posta: re-evaluate survival mode whenever its advanced setting changes.
+            com.bitchat.android.posta.PostaSettings.values.collect { refreshProfile() }
         }
         scope.launch {
             AppStateStore.directPeers
@@ -207,7 +214,13 @@ class PowerManager private constructor(context: Context) : LifecycleEventObserve
         return builder.setReportDelay(0).build()
     }
 
-    fun getAdvertiseSettings(): AdvertiseSettings = when (profile.value.mode) {
+    fun getAdvertiseSettings(): AdvertiseSettings = if (profile.value.postaSurvival) {
+        // Posta survival: advertise less often but keep medium power, so range is not reduced.
+        AdvertiseSettings.Builder()
+            .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_LOW_POWER)
+            .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_MEDIUM)
+            .setConnectable(true).setTimeout(0).build()
+    } else when (profile.value.mode) {
         PowerMode.PERFORMANCE -> AdvertiseSettings.Builder()
             .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_LOW_LATENCY)
             .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH)
@@ -228,7 +241,7 @@ class PowerManager private constructor(context: Context) : LifecycleEventObserve
 
     fun getMaxConnections(): Int = profile.value.ble.maxConnections
 
-    fun getRSSIThreshold(): Int = when (profile.value.mode) {
+    fun getRSSIThreshold(): Int = if (profile.value.postaSurvival) -85 else when (profile.value.mode) {
         PowerMode.PERFORMANCE -> -95
         PowerMode.BALANCED -> -85
         PowerMode.POWER_SAVER -> -75
@@ -247,6 +260,7 @@ class PowerManager private constructor(context: Context) : LifecycleEventObserve
             appendLine("Has Direct Peers: ${current.hasDirectPeers}")
             appendLine("BLE Scan: ${current.ble.scanOnMs}ms ON / ${current.ble.scanOffMs}ms OFF")
             appendLine("Max Connections: ${current.ble.maxConnections}")
+            appendLine("Posta survival: ${current.postaSurvival}")
         }
     }
 
@@ -256,7 +270,8 @@ class PowerManager private constructor(context: Context) : LifecycleEventObserve
             batteryLevel = batteryLevel,
             isCharging = isCharging,
             isBackground = isAppInBackground,
-            hasDirectPeers = hasDirectPeers
+            hasDirectPeers = hasDirectPeers,
+            survival = postaSurvivalActive()
         )
         if (_profile.value != next) {
             Log.i(
@@ -267,6 +282,11 @@ class PowerManager private constructor(context: Context) : LifecycleEventObserve
             _profile.value = next
         }
     }
+
+    private fun postaSurvivalActive(): Boolean =
+        com.bitchat.android.posta.PostaSettings.isSurvivalActive(
+            com.bitchat.android.posta.PostaSettings.values.value, batteryLevel, isCharging
+        )
 
     private fun registerBatteryReceiver() {
         try {
@@ -290,8 +310,10 @@ internal object PowerProfileResolver {
         batteryLevel: Int,
         isCharging: Boolean,
         isBackground: Boolean,
-        hasDirectPeers: Boolean
+        hasDirectPeers: Boolean,
+        survival: Boolean = false
     ): PowerManager.RuntimePerformanceProfile {
+        if (survival) return survivalProfile(batteryLevel, isCharging, isBackground, hasDirectPeers)
         val batteryBand = when {
             batteryLevel <= AppConstants.Power.CRITICAL_BATTERY_PERCENT ->
                 PowerManager.BatteryBand.CRITICAL
@@ -386,6 +408,40 @@ internal object PowerProfileResolver {
             meshAnnouncementIntervalMs = announcementInterval,
             wifiAware = wifi,
             nostr = nostr
+        )
+    }
+
+    /**
+     * Posta survival mode: the mesh has to last days, not hours. Scans and announcements are
+     * spaced out, but radio power and the RSSI threshold stay at balanced levels so a phone in
+     * survival mode still reaches (and relays for) the same neighbours.
+     */
+    private fun survivalProfile(
+        batteryLevel: Int,
+        isCharging: Boolean,
+        isBackground: Boolean,
+        hasDirectPeers: Boolean
+    ): PowerManager.RuntimePerformanceProfile {
+        val band = when {
+            batteryLevel <= AppConstants.Power.CRITICAL_BATTERY_PERCENT -> PowerManager.BatteryBand.CRITICAL
+            batteryLevel <= AppConstants.Power.LOW_BATTERY_PERCENT -> PowerManager.BatteryBand.LOW
+            else -> PowerManager.BatteryBand.NORMAL
+        }
+        return PowerManager.RuntimePerformanceProfile(
+            mode = PowerManager.PowerMode.POWER_SAVER,
+            batteryBand = band,
+            isBackground = isBackground,
+            isCharging = isCharging,
+            hasDirectPeers = hasDirectPeers,
+            ble = PowerManager.BleSchedule(
+                scanOnMs = 1_000L,
+                scanOffMs = if (isBackground) 89_000L else 44_000L,
+                continuousScan = false
+            ),
+            meshAnnouncementIntervalMs = 300_000L,
+            wifiAware = wifi(30, 180, 180, 15, 15, 20),
+            nostr = PowerManager.NostrSchedule(900_000L, 990_000L, 900_000L),
+            postaSurvival = true
         )
     }
 

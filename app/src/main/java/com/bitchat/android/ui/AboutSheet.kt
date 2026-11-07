@@ -1249,6 +1249,11 @@ fun AboutSheet(
                         }
                     }
 
+                    // Posta: advanced connectivity settings, last in the Settings tab.
+                    item(key = "posta_advanced") {
+                        com.bitchat.android.posta.PostaAdvancedEntry()
+                    }
+
                     } // end Settings tab
 
                     // Footer
