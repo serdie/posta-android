@@ -1,5 +1,7 @@
 package com.bitchat.android.posta
 
+import android.content.Intent
+import android.net.Uri
 import androidx.annotation.StringRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.horizontalScroll
@@ -10,23 +12,31 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -36,6 +46,8 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bitchat.android.R
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 /** Color de cada nivel. Fijos y con contraste suficiente sobre fondo claro y oscuro. */
 fun PostaStatus.Severity.color(): Color = when (this) {
@@ -53,12 +65,13 @@ fun PostaStatus.labelRes(): Int = when (this) {
     PostaStatus.MEDICAL -> R.string.posta_status_medical
 }
 
+/** En los avisos de ayuda la ubicación se ofrece activada; en el resto, desactivada. */
+private val PostaStatus.locationByDefault: Boolean
+    get() = severity == PostaStatus.Severity.WARNING || severity == PostaStatus.Severity.DANGER
+
 /**
- * Fila de estados de emergencia de un toque, encima del campo de mensaje.
- *
- * Cada botón abre una confirmación que dice exactamente a quién llegará el
- * mensaje (privado y cifrado, canal o público para todos los cercanos) y permite
- * añadir una nota breve. Se envía por el mismo camino que cualquier mensaje.
+ * Fila de estados de emergencia de un toque, encima del campo de mensaje,
+ * más el acceso a las señales SOS (linterna, pantalla, sonido y 112).
  */
 @Composable
 fun PostaStatusBar(
@@ -68,6 +81,7 @@ fun PostaStatusBar(
     modifier: Modifier = Modifier,
 ) {
     var pending by remember { mutableStateOf<PostaStatus?>(null) }
+    var showSos by rememberSaveable { mutableStateOf(false) }
     val barLabel = stringResource(R.string.posta_status_bar_label)
 
     Row(
@@ -96,6 +110,17 @@ fun PostaStatusBar(
                 ),
             )
         }
+        AssistChip(
+            onClick = { showSos = true },
+            label = {
+                Text("🆘 ${stringResource(R.string.posta_sos_chip)}", fontWeight = FontWeight.Bold, fontSize = 13.sp)
+            },
+            border = BorderStroke(1.5.dp, Color(0xFFE5484D)),
+            colors = AssistChipDefaults.assistChipColors(
+                containerColor = Color(0xFFE5484D).copy(alpha = 0.18f),
+                labelColor = MaterialTheme.colorScheme.onSurface,
+            ),
+        )
     }
 
     pending?.let { status ->
@@ -104,12 +129,13 @@ fun PostaStatusBar(
             selectedPrivatePeer = selectedPrivatePeer,
             currentChannel = currentChannel,
             onDismiss = { pending = null },
-            onConfirm = { note ->
+            onConfirm = { wire ->
                 pending = null
-                onSend(status.toWire(note))
+                onSend(wire)
             },
         )
     }
+    if (showSos) SosScreen(onDismiss = { showSos = false })
 }
 
 @Composable
@@ -120,16 +146,71 @@ private fun PostaStatusConfirmDialog(
     onDismiss: () -> Unit,
     onConfirm: (String) -> Unit,
 ) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
     var note by rememberSaveable(status) { mutableStateOf("") }
+    val canLocate = remember { PostaLocationProvider.hasPermission(context) }
+    var withLocation by rememberSaveable(status) { mutableStateOf(status.locationByDefault && canLocate) }
+    var locating by remember { mutableStateOf(false) }
+    var locateJob by remember { mutableStateOf<Job?>(null) }
+    var locationProblem by remember { mutableStateOf<String?>(null) }
+    var lastLocation by remember { mutableStateOf<PostaCoordinates?>(null) }
+
     val label = stringResource(status.labelRes())
     val destination = when {
         selectedPrivatePeer != null -> stringResource(R.string.posta_status_dest_private)
         currentChannel != null -> stringResource(R.string.posta_status_dest_channel, currentChannel)
         else -> stringResource(R.string.posta_status_dest_public)
     }
+    val msgNoPermission = stringResource(R.string.posta_location_no_permission)
+    val msgOff = stringResource(R.string.posta_location_off)
+    val msgTimeout = stringResource(R.string.posta_location_timeout)
+
+    fun sendWith(location: PostaCoordinates?) = onConfirm(status.toWire(note, location))
+
+    fun confirm() {
+        if (!withLocation) return sendWith(null)
+        locating = true
+        locationProblem = null
+        locateJob = scope.launch {
+            when (val r = PostaLocationProvider.current(context)) {
+                is PostaLocationProvider.Result.Found -> {
+                    lastLocation = r.coordinates
+                    locating = false
+                    sendWith(r.coordinates)
+                }
+                PostaLocationProvider.Result.NoPermission -> { locating = false; locationProblem = msgNoPermission }
+                PostaLocationProvider.Result.LocationOff -> { locating = false; locationProblem = msgOff }
+                PostaLocationProvider.Result.Timeout -> { locating = false; locationProblem = msgTimeout }
+            }
+        }
+    }
+
+    fun launchSms(location: PostaCoordinates?) {
+        runCatching {
+            context.startActivity(
+                Intent(Intent.ACTION_SENDTO, Uri.parse("smsto:"))
+                    .putExtra("sms_body", status.toWire(note, location))
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            )
+        }
+    }
+
+    // El SMS a veces sale cuando no hay datos ni llamadas: necesita muy poca señal.
+    fun openSms() {
+        if (!withLocation || lastLocation != null) return launchSms(lastLocation)
+        locating = true
+        locateJob = scope.launch {
+            val r = PostaLocationProvider.current(context)
+            locating = false
+            val found = (r as? PostaLocationProvider.Result.Found)?.coordinates
+            lastLocation = found
+            launchSms(found)
+        }
+    }
 
     AlertDialog(
-        onDismissRequest = onDismiss,
+        onDismissRequest = { locateJob?.cancel(); onDismiss() },
         title = { Text(stringResource(R.string.posta_status_confirm_title, "${status.emoji} $label")) },
         text = {
             Column {
@@ -141,15 +222,45 @@ private fun PostaStatusConfirmDialog(
                     label = { Text(stringResource(R.string.posta_status_note_label)) },
                     placeholder = { Text(stringResource(R.string.posta_status_note_hint)) },
                     singleLine = true,
+                    enabled = !locating,
                     keyboardOptions = KeyboardOptions(
                         capitalization = KeyboardCapitalization.Sentences,
                         imeAction = ImeAction.Send,
                     ),
-                    keyboardActions = androidx.compose.foundation.text.KeyboardActions(
-                        onSend = { onConfirm(note) },
-                    ),
+                    keyboardActions = KeyboardActions(onSend = { if (!locating) confirm() }),
                     modifier = Modifier.fillMaxWidth(),
                 )
+                Spacer(Modifier.height(8.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Column(Modifier.weight(1f)) {
+                        Text(stringResource(R.string.posta_location_toggle), fontWeight = FontWeight.SemiBold)
+                        Text(
+                            stringResource(
+                                if (canLocate) R.string.posta_location_toggle_help else R.string.posta_location_no_permission
+                            ),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                    Spacer(Modifier.width(8.dp))
+                    Switch(
+                        checked = withLocation,
+                        onCheckedChange = { withLocation = it },
+                        enabled = canLocate && !locating,
+                    )
+                }
+                if (locating) {
+                    Spacer(Modifier.height(8.dp))
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp)
+                        Spacer(Modifier.width(10.dp))
+                        Text(stringResource(R.string.posta_location_searching), style = MaterialTheme.typography.bodySmall)
+                    }
+                }
+                locationProblem?.let {
+                    Spacer(Modifier.height(8.dp))
+                    Text(it, style = MaterialTheme.typography.bodySmall, color = PostaStatus.Severity.WARNING.color())
+                }
                 Spacer(Modifier.height(12.dp))
                 Text(
                     text = stringResource(R.string.posta_status_preview_label),
@@ -157,12 +268,15 @@ private fun PostaStatusConfirmDialog(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 Text(
-                    text = status.toWire(note),
+                    text = status.toWire(note) + if (withLocation) " · 📍 …" else "",
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.SemiBold,
                     color = status.severity.color(),
                 )
-                Spacer(Modifier.height(12.dp))
+                Spacer(Modifier.height(8.dp))
+                TextButton(onClick = { openSms() }, enabled = !locating) {
+                    Text(stringResource(R.string.posta_status_also_sms))
+                }
                 Text(
                     text = stringResource(R.string.posta_status_disclaimer),
                     style = MaterialTheme.typography.bodySmall,
@@ -171,12 +285,22 @@ private fun PostaStatusConfirmDialog(
             }
         },
         confirmButton = {
-            TextButton(onClick = { onConfirm(note) }) {
-                Text(stringResource(R.string.posta_status_send), fontWeight = FontWeight.Bold)
+            when {
+                locating -> TextButton(onClick = { locateJob?.cancel(); locating = false; sendWith(null) }) {
+                    Text(stringResource(R.string.posta_location_send_without))
+                }
+                locationProblem != null -> TextButton(onClick = { sendWith(null) }) {
+                    Text(stringResource(R.string.posta_location_send_without), fontWeight = FontWeight.Bold)
+                }
+                else -> TextButton(onClick = { confirm() }) {
+                    Text(stringResource(R.string.posta_status_send), fontWeight = FontWeight.Bold)
+                }
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text(stringResource(R.string.posta_status_cancel)) }
+            TextButton(onClick = { locateJob?.cancel(); onDismiss() }) {
+                Text(stringResource(R.string.posta_status_cancel))
+            }
         },
     )
 }

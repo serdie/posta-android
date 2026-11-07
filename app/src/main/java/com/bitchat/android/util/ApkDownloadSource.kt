@@ -10,7 +10,7 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 /**
- * A trusted location that serves the latest signed universal BitChat APK.
+ * A trusted location that serves the latest signed universal Posta APK.
  *
  * Sources are tried in order. A source may list compatibility filenames, which
  * are only used when the preferred asset is absent. Adding a mirror should only
@@ -48,12 +48,10 @@ internal object DefaultApkDownloadSources {
             id = GITHUB_ID,
             displayName = "GitHub Releases",
             latestApkUrls = listOf(
-                "https://github.com/permissionlesstech/bitchat-android/releases/latest/" +
-                    "download/bitchat-android-universal.apk",
-                // Releases published before the stable asset-name rollout use
-                // this filename. Remove when supported releases all use the primary URL.
-                "https://github.com/permissionlesstech/bitchat-android/releases/latest/" +
-                    "download/app-universal-release.apk"
+                // Posta publishes its own signed universal APK. The certificate is pinned
+                // through BITCHAT_GITHUB_RELEASE_CERT_SHA256 in gradle.properties.
+                "https://github.com/serdie/posta-android/releases/latest/" +
+                    "download/posta-android-universal.apk"
             )
         )
     )

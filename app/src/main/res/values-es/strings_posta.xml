@@ -16,4 +16,22 @@
     <string name="posta_status_disclaimer">La entrega no está garantizada. Si puedes, llama al 112.</string>
     <string name="posta_status_preview_label">Se enviará así</string>
     <string name="about_tagline">Mensajería sin red para emergencias · basada en Bitchat (GPL-3.0)</string>
+    <string name="posta_location_toggle">Añadir mi ubicación GPS</string>
+    <string name="posta_location_toggle_help">El GPS funciona sin internet ni cobertura. Se lee una vez, solo ahora.</string>
+    <string name="posta_location_no_permission">El permiso de ubicación está desactivado. Actívalo en los ajustes de Android para compartir tu posición.</string>
+    <string name="posta_location_off">La ubicación está apagada en este teléfono. Enciéndela en los ajustes rápidos o envía sin ella.</string>
+    <string name="posta_location_timeout">Todavía no hay señal GPS. Sal al exterior o acércate a una ventana, o envía sin ubicación.</string>
+    <string name="posta_location_searching">Buscando satélites… (al aire libre tarda segundos)</string>
+    <string name="posta_location_send_without">Enviar sin ubicación</string>
+    <string name="posta_status_also_sms">Enviar también por SMS (basta con muy poca señal)</string>
+    <string name="posta_sos_chip">Señales SOS</string>
+    <string name="posta_sos_explainer">Repite SOS en Morse (··· ––– ···), la señal de socorro universal. Úsala para que los equipos de rescate te encuentren.</string>
+    <string name="posta_sos_torch">🔦 Linterna</string>
+    <string name="posta_sos_screen">📱 Pantalla que parpadea</string>
+    <string name="posta_sos_sound">🔊 Sonido de silbato</string>
+    <string name="posta_sos_all">🆘 Todo a la vez</string>
+    <string name="posta_sos_stop">Parar</string>
+    <string name="posta_call_112">📞 Llamar al 112</string>
+    <string name="posta_sos_tips">Si estás atrapado: ahorra batería, haz ruido en grupos de tres y haz señales solo cuando oigas o veas a alguien. El 112 funciona con cualquier operador.</string>
+    <string name="posta_close">Cerrar</string>
 </resources>

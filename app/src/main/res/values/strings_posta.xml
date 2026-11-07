@@ -16,4 +16,22 @@
     <string name="posta_status_cancel">Cancel</string>
     <string name="posta_status_disclaimer">Delivery is not guaranteed. If you can, call 112.</string>
     <string name="posta_status_preview_label">Will be sent as</string>
+    <string name="posta_location_toggle">Add my GPS location</string>
+    <string name="posta_location_toggle_help">GPS works without internet or coverage. Read once, only now.</string>
+    <string name="posta_location_no_permission">Location permission is off. Enable it in Android settings to share your position.</string>
+    <string name="posta_location_off">Location is turned off on this phone. Turn it on in quick settings, or send without it.</string>
+    <string name="posta_location_timeout">No GPS fix yet. Go outdoors or near a window, or send without location.</string>
+    <string name="posta_location_searching">Looking for satellites… (outdoors it takes seconds)</string>
+    <string name="posta_location_send_without">Send without location</string>
+    <string name="posta_status_also_sms">Also send by SMS (needs only a weak signal)</string>
+    <string name="posta_sos_chip">SOS signals</string>
+    <string name="posta_sos_explainer">Repeats SOS in Morse code (··· ––– ···), the universal distress signal. Use it so rescuers can find you.</string>
+    <string name="posta_sos_torch">🔦 Flashlight</string>
+    <string name="posta_sos_screen">📱 Flashing screen</string>
+    <string name="posta_sos_sound">🔊 Whistle sound</string>
+    <string name="posta_sos_all">🆘 Everything at once</string>
+    <string name="posta_sos_stop">Stop</string>
+    <string name="posta_call_112">📞 Call 112</string>
+    <string name="posta_sos_tips">If you are trapped: save battery, make noise in groups of three, and signal only when you hear or see someone. 112 works with any carrier.</string>
+    <string name="posta_close">Close</string>
 </resources>

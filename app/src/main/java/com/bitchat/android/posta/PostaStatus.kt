@@ -29,10 +29,15 @@ enum class PostaStatus(
     /** Cabecera del mensaje tal y como viaja por la malla. */
     val header: String get() = "$emoji $wireEs / $wireEn"
 
-    /** Texto completo a enviar, con una nota opcional ya saneada y recortada. */
-    fun toWire(note: String? = null): String {
+    /**
+     * Texto completo a enviar, con una nota opcional ya saneada y recortada y,
+     * si se quiere, las coordenadas GPS al final.
+     */
+    fun toWire(note: String? = null, location: PostaCoordinates? = null): String {
         val clean = sanitizeNote(note)
-        return if (clean.isEmpty()) header else "$header$NOTE_SEPARATOR$clean"
+        val tail = listOfNotNull(clean.ifEmpty { null }, location?.toWire())
+            .joinToString(PostaCoordinates.SEPARATOR)
+        return if (tail.isEmpty()) header else "$header$NOTE_SEPARATOR$tail"
     }
 
     companion object {
@@ -63,8 +68,9 @@ enum class PostaStatus(
                 val rest = text.substring(status.header.length)
                 if (rest.isEmpty()) return Parsed(status, null)
                 if (rest.startsWith(NOTE_SEPARATOR)) {
-                    val note = rest.substring(NOTE_SEPARATOR.length).trim()
-                    return Parsed(status, note.ifEmpty { null })
+                    val raw = rest.substring(NOTE_SEPARATOR.length).trim()
+                    val (note, location) = PostaCoordinates.splitTrailing(raw.ifEmpty { null })
+                    return Parsed(status, note, location)
                 }
                 return null
             }
@@ -72,5 +78,9 @@ enum class PostaStatus(
         }
     }
 
-    data class Parsed(val status: PostaStatus, val note: String?)
+    data class Parsed(
+        val status: PostaStatus,
+        val note: String?,
+        val location: PostaCoordinates? = null,
+    )
 }

@@ -236,7 +236,7 @@ fun formatTextMessageBody(
         )
         builder.append(postaStatus.status.header)
         builder.pop()
-        if (postaStatus.note != null) {
+        if (postaStatus.note != null || postaStatus.location != null) {
             builder.pushStyle(SpanStyle(color = contentColor, fontSize = BASE_FONT_SIZE.sp))
             builder.append(com.bitchat.android.posta.PostaStatus.NOTE_SEPARATOR)
             builder.pop()
@@ -255,6 +255,25 @@ fun formatTextMessageBody(
         linkColor = linkColor,
         mentionPeerIdentities = mentionPeerIdentities,
     )
+
+    // Posta: GPS coordinates become a link that opens any map app (offline ones included).
+    postaStatus?.location?.let { location ->
+        builder.pushStyle(SpanStyle(color = contentColor, fontSize = BASE_FONT_SIZE.sp))
+        if (postaStatus.note != null) builder.append(com.bitchat.android.posta.PostaCoordinates.SEPARATOR)
+        builder.pop()
+        builder.pushStyle(
+            SpanStyle(
+                color = linkColor,
+                fontSize = BASE_FONT_SIZE.sp,
+                fontWeight = FontWeight.SemiBold,
+                textDecoration = TextDecoration.Underline,
+            )
+        )
+        val start = builder.length
+        builder.append(location.toWire())
+        builder.addStringAnnotation(tag = "url_click", annotation = location.toGeoUri(), start = start, end = builder.length)
+        builder.pop()
+    }
 
     if (includeTimestamp) {
         appendBodyTimestamp(builder, message, palette, timeFormatter)
